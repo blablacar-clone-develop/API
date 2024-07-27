@@ -4,6 +4,10 @@ WORKDIR /workspace/app
 COPY mvnw .
 COPY .mvn .mvn
 COPY pom.xml .
+
+# Устанавливаем права на выполнение для mvnw
+RUN chmod +x ./mvnw
+
 COPY src src
 
 RUN ./mvnw install -DskipTests
