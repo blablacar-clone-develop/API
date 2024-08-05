@@ -12,6 +12,8 @@ services:
     image: mysql:8.3.0
     ports:
       - '3306:3306'
+    expose:
+      - "3306"
     volumes:
       - ./volumes/db/mysql/main:/var/lib/mysql
     env_file:
@@ -24,6 +26,8 @@ services:
     image: phpmyadmin:5.2.1-apache
     ports:
       - '8088:80'
+    expose:
+      - "8088"
     env_file:
       - .env
     networks:
