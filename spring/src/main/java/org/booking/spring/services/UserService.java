@@ -14,6 +14,15 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
     public User registerNewUserAccount(SignUpRequest signUpRequest) {
+
+        // Виконуємо додаткові перевірки на випадок некоректної валідації
+        if (signUpRequest.getName() == null || signUpRequest.getSurname() == null ||
+                signUpRequest.getEmail() == null || signUpRequest.getPassword() == null ||
+                signUpRequest.getGender() == null || signUpRequest.getDateOfBirth() == null) {
+            throw new IllegalArgumentException("All fields are required for registration");
+        }
+
+
         if (emailExists(signUpRequest.getEmail())) {
             throw new IllegalArgumentException("This email has already exist");
         }
