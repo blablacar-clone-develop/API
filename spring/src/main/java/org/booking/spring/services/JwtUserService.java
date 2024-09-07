@@ -24,8 +24,10 @@ public class JwtUserService {
 
     public UserLoginResponse signUp(User user) {
         String accessToken = generateAccessToken(user.getId(), user.getEmail());
-        return new UserLoginResponse(user.getId(), accessToken);
+        return new UserLoginResponse(user.getId(), user.getName(),accessToken);
     }
+
+
     @Value("${jwt.secret}")
     private String secretKey;
     private String generateAccessToken(Long userId, String email) {
@@ -45,6 +47,6 @@ public class JwtUserService {
             throw new IllegalArgumentException("Password");
         }
         String accessToken = generateAccessToken(user.getId(), user.getEmail());
-        return new UserLoginResponse(user.getId(), accessToken);
+        return new UserLoginResponse(user.getId(), user.getName() ,accessToken);
     }
 }
