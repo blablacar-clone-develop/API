@@ -4,6 +4,7 @@ import org.booking.spring.models.user.User;
 import org.booking.spring.requests.auth.SignInRequest;
 import org.booking.spring.requests.auth.SignUpRequest;
 import org.booking.spring.responses.UserLoginResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,7 +31,8 @@ public class UserController {
             return ResponseEntity.ok(userLoginResponse);
         } catch(Exception ex)
         {
-            return ResponseEntity.ok().body(ex.getMessage());
+            // Повертаємо статус 400 Bad Request при помилках реєстрації
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
         }
     }
     @PostMapping("/signIn")
@@ -40,7 +42,7 @@ public class UserController {
             return ResponseEntity.ok(userLoginResponse);
         } catch(Exception ex)
         {
-            return ResponseEntity.ok().body("Error");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
         }
     }
 }

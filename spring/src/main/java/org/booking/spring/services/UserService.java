@@ -13,15 +13,14 @@ import java.util.Optional;
 public class UserService {
     @Autowired
     private UserRepository userRepository;
-    public User registerNewUserAccount(SignUpRequest signUpRequest) {
 
+    public User registerNewUserAccount(SignUpRequest signUpRequest) {
         // Виконуємо додаткові перевірки на випадок некоректної валідації
         if (signUpRequest.getName() == null || signUpRequest.getSurname() == null ||
                 signUpRequest.getEmail() == null || signUpRequest.getPassword() == null ||
                 signUpRequest.getGender() == null || signUpRequest.getDateOfBirth() == null) {
             throw new IllegalArgumentException("All fields are required for registration");
         }
-
 
         if (emailExists(signUpRequest.getEmail())) {
             throw new IllegalArgumentException("This email has already exist");
@@ -34,6 +33,7 @@ public class UserService {
         user.setPassword(signUpRequest.getPassword());
         user.setDateOfBirthday(signUpRequest.getDateOfBirth());
         user.setGender(signUpRequest.getGender());
+
         //User Permission
         UserPermissions userPermissions = new UserPermissions();
         userPermissions.setName("User");
@@ -42,8 +42,8 @@ public class UserService {
 
         return userRepository.save(user);
     }
-    private boolean emailExists(String email) {
 
+    private boolean emailExists(String email) {
         return  userRepository.findByEmail(email).isPresent();
     }
 }
