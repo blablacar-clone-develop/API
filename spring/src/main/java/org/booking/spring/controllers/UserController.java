@@ -30,7 +30,7 @@ public class UserController {
             return ResponseEntity.ok(userLoginResponse);
         } catch(Exception ex)
         {
-            return ResponseEntity.ok().body(ex.toString());
+            return ResponseEntity.ok().body(ex.getMessage());
         }
     }
     @PostMapping("/signIn")
