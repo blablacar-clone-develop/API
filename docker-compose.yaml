@@ -35,6 +35,22 @@ services:
     networks:
       - blablacar
 
+  blablacar.imageStorage.minio:
+    image: minio/minio:latest
+    command: server --console-address :9001 /data
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - ./volumes/minio:/data
+    expose:
+      - "9000"
+      - "9001"
+    env_file:
+      - .env
+    networks:
+      - blablacar
+
 networks:
   blablacar:
     driver: bridge
