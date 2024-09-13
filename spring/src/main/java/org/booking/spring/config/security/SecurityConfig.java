@@ -30,10 +30,12 @@ public class SecurityConfig {
 
         return new InMemoryUserDetailsManager(user);
     }
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(authz -> authz
+                .authorizeHttpRequests(
+                        authz -> authz
                         .requestMatchers(
                                 "/api/signUp",
                                 "api/signIn",
@@ -43,9 +45,9 @@ public class SecurityConfig {
                                         .anyRequest().authenticated()
                 );
         //.httpBasic(withDefaults());
-
         return http.build();
     }
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
