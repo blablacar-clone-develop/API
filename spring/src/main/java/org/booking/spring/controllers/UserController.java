@@ -11,9 +11,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.booking.spring.services.*;
+
 @RestController
 @RequestMapping("/api")
 public class UserController {
+
     private final UserService userService;
     private final JwtUserService jwtUserService;
 
@@ -45,4 +47,6 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
         }
     }
+
+
 }

@@ -11,9 +11,10 @@ import org.springframework.web.bind.annotation.RestController;
 @SpringBootApplication(scanBasePackages = "org.booking.spring")
 @EnableJpaRepositories(basePackages = "org.booking.spring.repositories")
 public class Application {
+
     @GetMapping("/hi")
     public String home() {
-        return "Welcome to the Spring Boot application!";
+        return "Hello World";
     }
 
     public static void main(String[] args) {
