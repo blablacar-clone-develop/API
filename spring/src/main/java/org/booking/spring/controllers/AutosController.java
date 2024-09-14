@@ -32,14 +32,13 @@ public class AutosController {
         try {
             String jwtToken = token.substring(7);  // Видаляємо "Bearer " із заголовка
             Long userId = jwtUserService.extractUserId(jwtToken);  // Витягуємо userId з токена
-            System.out.println("userId  "+userId);
+            List<AutoDto> autosList = autosService.getAllAutos();
+            return ResponseEntity.ok(autosList);
         } catch (Exception ex)
         {
-            ex.printStackTrace();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        List<AutoDto> autosList = autosService.getAllAutos();
-        return ResponseEntity.ok(autosList);
     }
 
     //Отримання автомобілів за ID користувача
@@ -58,9 +57,21 @@ public class AutosController {
 
     //Оновлення автомобіля за його ID
     @PutMapping("/update/{autoId}")
-    public ResponseEntity<AutoDto> updateAuto(@PathVariable Long autoId, @RequestBody Autos auto) {
+    public ResponseEntity<String> updateAuto(@PathVariable Long autoId, @RequestBody Autos auto, @RequestHeader("Authorization") String token) {
+        try {
+            String jwtToken = token.substring(7);  // Видаляємо "Bearer " із заголовка
+            Long userId = jwtUserService.extractUserId(jwtToken);  // Витягуємо userId з токена
+
+            // Перевіряємо, чи є користувач власником автомобіля
+            if (!autosService.isUserOwnerOfAuto(autoId, userId)) {
+                return ResponseEntity.status(403).body("Користувач не є власником цього автомобіля");
+            }
+        } catch (Exception ex) {
+            return ResponseEntity.status(403).body("Помилка авторизації");
+        }
+
         AutoDto updatedAuto = autosService.updateAuto(autoId, auto);
-        return ResponseEntity.ok(updatedAuto);
+        return ResponseEntity.ok("Aвто успішно змінено");
     }
 
 
@@ -80,5 +91,43 @@ public class AutosController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);  // Обробляємо помилки
         }
     }
+
+    //Видалити авто по Айді якщо воно нолежить юзеру
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<String> deleteAuto(@PathVariable Long id, @RequestHeader("Authorization") String token) {
+        try {
+            String jwtToken = token.substring(7);  // Видаляємо "Bearer " із заголовка
+            Long userId = jwtUserService.extractUserId(jwtToken);  // Витягуємо userId з токена
+
+            // Перевіряємо, чи є користувач власником автомобіля
+            if (!autosService.isUserOwnerOfAuto(id, userId)) {
+                return ResponseEntity.status(403).body("Користувач не є власником цього автомобіля");
+            }
+
+            autosService.deleteAuto(id);
+            return ResponseEntity.ok("Автомобіль успішно видалено");
+        } catch (IllegalArgumentException ex) {
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        }
+    }
+
+    //видалити всі авто юзера
+    @DeleteMapping("/user/{userId}")
+    public ResponseEntity<String> deleteAllAutosByUserId(@PathVariable Long userId, @RequestHeader("Authorization") String token) {
+        try {
+            String jwtToken = token.substring(7);  // Видаляємо "Bearer " із заголовка
+            Long userIdJwt = jwtUserService.extractUserId(jwtToken);  // Витягуємо userId з токена
+
+            // Перевіряємо, чи є користувач власником автомобіля
+            if (userIdJwt != userId) {
+                return ResponseEntity.status(403).body("Користувач не є власником цих автомобілів");
+            }
+            autosService.deleteAllAutosByUserId(userId);
+            return ResponseEntity.ok("Усі автомобілі користувача успішно видалено");
+        } catch (Exception ex) {
+            return ResponseEntity.badRequest().body("Помилка: " + ex.getMessage());
+        }
+    }
+
 
 }

@@ -26,6 +26,17 @@ public class AutosService {
         this.repository = repository;
     }
 
+
+     //Перевіряє, чи є користувач власником конкретного автомобіля
+    public boolean isUserOwnerOfAuto(Long autoId, Long userId) {
+        // Знаходимо автомобіль за його ID
+        Autos auto = repository.findById(autoId)
+                .orElseThrow(() -> new IllegalArgumentException("Автомобіль з вказаним ID не знайдено"));
+        // Порівнюємо userId у автомобіля з userId, переданим у параметрах
+        return auto.getUser().getId().equals(userId);
+    }
+
+
     public List<AutoDto> getAllAutos() {
         List<Autos> autosList = repository.findAll();
         return autosList.stream()
@@ -74,4 +85,19 @@ public class AutosService {
 
         return new AutoDto(existingAuto.getId(), existingAuto.getBrand(), existingAuto.getModel(), existingAuto.getColor());
     }
+
+    @Transactional
+    public void deleteAuto(Long autoId) {
+        if (!repository.existsById(autoId)) {
+            throw new IllegalArgumentException("Автомобіль з ID " + autoId + " не знайдено");
+        }
+        repository.deleteById(autoId);
+    }
+
+    @Transactional
+    public void deleteAllAutosByUserId(Long userId) {
+        // Видаляємо всі авто, що належать користувачу з переданим userId
+        repository.deleteByUserId(userId);
+    }
+
 }
