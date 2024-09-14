@@ -1,6 +1,7 @@
 package org.booking.spring.services;
 
 
+import jakarta.transaction.Transactional;
 import org.booking.spring.models.auto.Autos;
 import org.booking.spring.models.user.User;
 import org.booking.spring.repositories.AutosRepository;
@@ -32,6 +33,15 @@ public class AutosService {
                 .collect(Collectors.toList());
     }
 
+    public AutoDto getAutoById(Long id) {
+        Autos auto = repository.findById(id).orElse(null);
+        return new AutoDto(auto.getId(), auto.getBrand(), auto.getModel(), auto.getColor());
+    }
+
+    public AutoDto returnAutoDto(Autos auto) {
+        return new AutoDto(auto.getId(), auto.getBrand(), auto.getModel(), auto.getColor());
+    }
+
     public List<AutoDto> getAutosByUserId(Long userId) {
         List<Autos> autosList = repository.findByUserId(userId);
         // Мапінг сутності Autos у DTO
@@ -41,11 +51,27 @@ public class AutosService {
 
     }
 
-
     public Autos createAutoForUser(Long userId, Autos auto) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         auto.setUser(user); // Прив'язуємо автомобіль до користувача
         return repository.save(auto); // Зберігаємо автомобіль у базі
+    }
+
+    @Transactional
+    public AutoDto updateAuto(Long autoId, Autos updatedAuto) {
+        // Знайти авто за ID
+        Autos existingAuto = repository.findById(autoId)
+                .orElseThrow(() -> new IllegalArgumentException("Автомобіль з ID " + autoId + " не знайдено"));
+
+        // Оновити поля
+        existingAuto.setBrand(updatedAuto.getBrand());
+        existingAuto.setModel(updatedAuto.getModel());
+        existingAuto.setColor(updatedAuto.getColor());
+
+        // Зберегти оновлений автомобіль
+        repository.save(existingAuto);
+
+        return new AutoDto(existingAuto.getId(), existingAuto.getBrand(), existingAuto.getModel(), existingAuto.getColor());
     }
 }

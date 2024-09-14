@@ -49,8 +49,23 @@ public class AutosController {
         return ResponseEntity.ok(autos);
     }
 
+    //Отримання автомобіля за його ID
+    @GetMapping("/getByAutoId/{autoId}")
+    public ResponseEntity<AutoDto> getAutosById(@PathVariable Long autoId) {
+        AutoDto auto = autosService.getAutoById(autoId);
+        return ResponseEntity.ok(auto);
+    }
+
+    //Оновлення автомобіля за його ID
+    @PutMapping("/update/{autoId}")
+    public ResponseEntity<AutoDto> updateAuto(@PathVariable Long autoId, @RequestBody Autos auto) {
+        AutoDto updatedAuto = autosService.updateAuto(autoId, auto);
+        return ResponseEntity.ok(updatedAuto);
+    }
+
+
     @PostMapping("/create")
-    public ResponseEntity<Autos> createAuto(
+    public ResponseEntity<AutoDto> createAuto(
             @RequestBody Autos auto,
             @RequestHeader("Authorization") String token
     ) {
@@ -59,7 +74,7 @@ public class AutosController {
             Long userId = jwtUserService.extractUserId(jwtToken);  // Витягуємо userId з токена
 
             Autos createdAuto = autosService.createAutoForUser(userId, auto);  // Створюємо автомобіль для користувача
-            return ResponseEntity.ok(createdAuto);  // Повертаємо відповідь із створеним авто
+            return ResponseEntity.ok(autosService.returnAutoDto(createdAuto));  // Повертаємо відповідь із створеним авто у вігляді ДТО
 
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);  // Обробляємо помилки
