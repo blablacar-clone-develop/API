@@ -42,6 +42,7 @@ public class SecurityConfig {
                                 "hi",
                                 "api/files/upload/avatar",
                                 "api/autos/getAllAutos",
+                                "api/autos/create",
                                 "api/autos/user/*"
                                         ).permitAll()
                                         .anyRequest().authenticated()

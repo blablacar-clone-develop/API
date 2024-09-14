@@ -2,7 +2,9 @@ package org.booking.spring.services;
 
 
 import org.booking.spring.models.auto.Autos;
+import org.booking.spring.models.user.User;
 import org.booking.spring.repositories.AutosRepository;
+import org.booking.spring.repositories.UserRepository;
 import org.booking.spring.responses.DTO.AutoDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +16,9 @@ import java.util.stream.Collectors;
 public class AutosService {
 
     private final AutosRepository repository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     public AutosService(AutosRepository repository) {
@@ -37,4 +42,10 @@ public class AutosService {
     }
 
 
+    public Autos createAutoForUser(Long userId, Autos auto) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        auto.setUser(user); // Прив'язуємо автомобіль до користувача
+        return repository.save(auto); // Зберігаємо автомобіль у базі
+    }
 }
