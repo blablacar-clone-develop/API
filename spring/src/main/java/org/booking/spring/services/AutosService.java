@@ -32,6 +32,15 @@ public class AutosService {
                 .collect(Collectors.toList());
     }
 
+    public AutoDto getAutoById(Long id) {
+        Autos auto = repository.findById(id).orElse(null);
+        return new AutoDto(auto.getId(), auto.getBrand(), auto.getModel(), auto.getColor());
+    }
+
+    public AutoDto returnAutoDto(Autos auto) {
+        return new AutoDto(auto.getId(), auto.getBrand(), auto.getModel(), auto.getColor());
+    }
+
     public List<AutoDto> getAutosByUserId(Long userId) {
         List<Autos> autosList = repository.findByUserId(userId);
         // Мапінг сутності Autos у DTO

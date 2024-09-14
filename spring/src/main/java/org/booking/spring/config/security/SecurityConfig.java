@@ -43,7 +43,8 @@ public class SecurityConfig {
                                 "api/files/upload/avatar",
                                 "api/autos/getAllAutos",
                                 "api/autos/create",
-                                "api/autos/user/*"
+                                "api/autos/user/*",
+                                "api/autos/getByAutoId/*"
                                         ).permitAll()
                                         .anyRequest().authenticated()
                 );

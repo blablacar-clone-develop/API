@@ -61,21 +61,5 @@ public class JwtUserService {
 
         Claims claims = parser.parseClaimsJws(token).getPayload();
         return Long.parseLong(claims.getSubject());
-
-
-//        Key key = getSigningKey();
-//        JwtParser parser = (JwtParser) Jwts.parser().setSigningKey(key);
-//
-//        Claims claims = parser.parseClaimsJws(token).getBody();
-//        return Long.parseLong(claims.getSubject());
     }
-
-//    public String extractEmail(String token) {
-//        Key key = getSigningKey();
-//        JwtParser parser = (JwtParser) parser()
-//                .setSigningKey(key);
-//        Claims claims = parser.parseClaimsJws(token).getBody();
-//        return claims.get("email", String.class);
-//    }
-
 }
