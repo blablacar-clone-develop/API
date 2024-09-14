@@ -21,11 +21,10 @@ public class FileController {
 
     private final StorageService storageService;
 
-    // Дозволені типи файлів для завантаження
-    private static final List<String> ALLOWED_CONTENT_TYPES = Arrays.asList(
+    // Дозволені типи файлів для завантаження для аватару
+    private static final List<String> ALLOWED_CONTENT_TYPES_FOR_AVATAR = Arrays.asList(
             "image/jpeg",
-            "image/png",
-            "image/gif"
+            "image/png"
     );
 
     @PostMapping("/upload/avatar")
@@ -33,7 +32,7 @@ public class FileController {
         try {
             // Перевірка типу файлу
             String contentType = file.getContentType();
-            if (contentType == null || !ALLOWED_CONTENT_TYPES.contains(contentType)) {
+            if (contentType == null || !ALLOWED_CONTENT_TYPES_FOR_AVATAR.contains(contentType)) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body("Недозволений тип файлу. Дозволені типи: JPEG, PNG, GIF.");
             }

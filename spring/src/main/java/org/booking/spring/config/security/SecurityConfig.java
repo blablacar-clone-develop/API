@@ -40,7 +40,8 @@ public class SecurityConfig {
                                 "/api/signUp",
                                 "api/signIn",
                                 "hi",
-                                "api/files/upload/avatar"
+                                "api/files/upload/avatar",
+                                "api/autos/getAllAutos"
                                         ).permitAll()
                                         .anyRequest().authenticated()
                 );
