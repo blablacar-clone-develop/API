@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.booking.spring.models.auto.Autos;
+import org.booking.spring.models.trips.Trips;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -31,6 +32,16 @@ public class User extends BaseUserEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<Autos> autos;
+
+    // Один користувач може мати декілька автомобілів
+//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<Autos> autos;
+
+    // Один користувач може мати багато подорожей
+//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+//    @JsonManagedReference
+//    private List<Trips> trips;
+
 
     @Override
     protected void onUpdate() {

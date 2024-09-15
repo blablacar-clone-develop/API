@@ -58,7 +58,6 @@ public class JwtUserService {
     public Long extractUserId(String token) {
         JwtParserBuilder parserBuilder = Jwts.parser().setSigningKey(getSigningKey());
         JwtParser parser = parserBuilder.build();
-
         Claims claims = parser.parseClaimsJws(token).getPayload();
         return Long.parseLong(claims.getSubject());
     }

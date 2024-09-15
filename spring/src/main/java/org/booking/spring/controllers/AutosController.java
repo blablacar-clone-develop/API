@@ -77,8 +77,8 @@ public class AutosController {
 
     @PostMapping("/create")
     public ResponseEntity<AutoDto> createAuto(
-            @RequestBody Autos auto,
-            @RequestHeader("Authorization") String token
+            @RequestHeader("Authorization") String token,
+            @RequestBody Autos auto
     ) {
         try {
             String jwtToken = token.substring(7);  // Видаляємо "Bearer " із заголовка
