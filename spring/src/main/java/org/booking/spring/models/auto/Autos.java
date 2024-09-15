@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.booking.spring.models.baseEntity.BaseEntity;
 import org.booking.spring.models.trips.Trips;
+import org.booking.spring.models.user.BaseUserEntity;
 import org.booking.spring.models.user.User;
 
 import java.time.LocalDateTime;
@@ -13,11 +15,7 @@ import java.util.List;
 @Entity
 @Table(name = "autos")
 @Data
-public class Autos {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Autos extends BaseEntity {
 
     // Багато автомобілів належать одному користувачу
     @ManyToOne
@@ -42,22 +40,5 @@ public class Autos {
 
     @Column(name = "color", nullable = false)
     private String color;
-
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
-
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
-
-    @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
-        updatedAt = LocalDateTime.now();
-    }
-
-    @PreUpdate
-    protected void onUpdate() {
-        updatedAt = LocalDateTime.now();
-    }
 
 }
