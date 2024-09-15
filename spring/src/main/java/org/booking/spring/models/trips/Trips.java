@@ -28,6 +28,27 @@ public class Trips {
     @JsonBackReference
     private User user;
 
+    @Column(name = "passenger_count", nullable = false)
+    private Integer passengerCount;
+
+    @Column(name = "price", nullable = false)
+    private Double price;
+
+    @Column(name = "available_seats", nullable = false)
+    private Integer availableSeats;
+
+    @Column(name = "departure_time", nullable = false)
+    private LocalDateTime departureTime;
+
+    // Зв'язок з TravelPoint для початкової точки
+    @ManyToOne
+    @JoinColumn(name = "start_travel_point_id")
+    private TravelPoints startTravelPoint;
+
+    // Зв'язок з TravelPoint для кінцевої точки
+    @ManyToOne
+    @JoinColumn(name = "finish_travel_point_id")
+    private TravelPoints finishTravelPoint;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
