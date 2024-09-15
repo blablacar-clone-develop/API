@@ -33,15 +33,10 @@ public class User extends BaseUserEntity {
     @JsonManagedReference
     private List<Autos> autos;
 
-    // Один користувач може мати декілька автомобілів
-//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<Autos> autos;
-
-    // Один користувач може мати багато подорожей
-//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-//    @JsonManagedReference
-//    private List<Trips> trips;
-
+    // Один користувач може мати декілька подорожей
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<Trips> trips;
 
     @Override
     protected void onUpdate() {

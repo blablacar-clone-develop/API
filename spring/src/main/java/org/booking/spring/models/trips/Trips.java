@@ -22,6 +22,13 @@ public class Trips {
     @ManyToMany(mappedBy = "trips")
     private List<Autos> autos;
 
+    // Багато автомобілів належать одному користувачу
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    @JsonBackReference
+    private User user;
+
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
