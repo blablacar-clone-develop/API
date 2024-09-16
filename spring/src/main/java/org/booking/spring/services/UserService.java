@@ -13,9 +13,10 @@ import java.util.Optional;
 public class UserService {
     @Autowired
     private UserRepository userRepository;
-
+    public Optional<User> getUserById(Long id) {
+        return userRepository.findById(id);
+    }
     public User registerNewUserAccount(SignUpRequest signUpRequest) {
-        // Виконуємо додаткові перевірки на випадок некоректної валідації
         if (signUpRequest.getName() == null || signUpRequest.getSurname() == null ||
                 signUpRequest.getEmail() == null || signUpRequest.getPassword() == null ||
                 signUpRequest.getGender() == null || signUpRequest.getDateOfBirth() == null) {
@@ -45,5 +46,9 @@ public class UserService {
 
     private boolean emailExists(String email) {
         return  userRepository.findByEmail(email).isPresent();
+    }
+
+    public User updateUser(User user) {
+        return userRepository.save(user);
     }
 }
