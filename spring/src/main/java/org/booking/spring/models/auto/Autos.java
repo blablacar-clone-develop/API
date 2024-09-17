@@ -31,14 +31,14 @@ public class Autos extends BaseEntity {
             inverseJoinColumns = @JoinColumn(name = "trip_id")
     )
     private List<Trips> trips;
-
-    @Column(name = "brand", nullable = false)
-    private String brand;
-
-    @Column(name = "model", nullable = false)
-    private String model;
-
-    @Column(name = "color", nullable = false)
-    private String color;
+    @ManyToOne
+    @JoinColumn(name = "brand_id", nullable = false)
+    private Brand brand;
+    @ManyToOne
+    @JoinColumn(name = "model_id", nullable = false)
+    private Model model;
+    @ManyToOne
+    @JoinColumn(name = "color_id", nullable = false)
+    private Color color;
 
 }

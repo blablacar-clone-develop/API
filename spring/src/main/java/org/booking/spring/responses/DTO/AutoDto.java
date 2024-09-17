@@ -8,11 +8,11 @@ import lombok.Setter;
 public class AutoDto {
     // Getters and setters
     private Long id;
-    private String brand;
-    private String model;
-    private String color;
+    private Long brand;
+    private Long model;
+    private Long color;
 
-    public AutoDto(Long id, String brand, String model, String color) {
+    public AutoDto(Long id, Long brand, Long model, Long color) {
         this.id = id;
         this.brand = brand;
         this.model = model;

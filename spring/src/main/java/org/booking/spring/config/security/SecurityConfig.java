@@ -48,7 +48,10 @@ public class SecurityConfig {
                                 "api/autos/delete/*",
                                 "api/autos/getByAutoId/*",
                                 "api/usersData/*",
-                                "api/usersData/update/*"
+                                "api/usersData/update/*",
+                                "api/autos/brands/all",
+                                "api/autos/brands/top",
+                                "api/autos/models/all/*"
                                         ).permitAll()
                                         .anyRequest().authenticated()
                 );

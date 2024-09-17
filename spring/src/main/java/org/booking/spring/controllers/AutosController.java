@@ -26,21 +26,8 @@ public class AutosController {
 
 
     ///Отримати всі автомобілі яки є в базі в разі якщо авторизований
-    @GetMapping("/getAllAutos")
-    public ResponseEntity<List<AutoDto>> getAllAutos(@RequestHeader("Authorization") String token
-    ) {
-        try {
-            String jwtToken = token.substring(7);  // Видаляємо "Bearer " із заголовка
-            Long userId = jwtUserService.extractUserId(jwtToken);  // Витягуємо userId з токена
-            List<AutoDto> autosList = autosService.getAllAutos();
-            return ResponseEntity.ok(autosList);
-        } catch (Exception ex)
-        {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
 
-    }
-
+/*
     //Отримання автомобілів за ID користувача
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<AutoDto>> getAutosByUserId(@PathVariable Long userId) {
@@ -129,5 +116,5 @@ public class AutosController {
         }
     }
 
-
+*/
 }
