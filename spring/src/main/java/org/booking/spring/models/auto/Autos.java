@@ -17,13 +17,11 @@ import java.util.List;
 @Data
 public class Autos extends BaseEntity {
 
-    // Багато автомобілів належать одному користувачу
     @ManyToOne
     @JoinColumn(name = "user_id")
     @JsonBackReference
     private User user;
 
-    // Зв'язок "багато до багатьох" з Trips
     @ManyToMany
     @JoinTable(
             name = "autos_trips",
@@ -31,14 +29,20 @@ public class Autos extends BaseEntity {
             inverseJoinColumns = @JoinColumn(name = "trip_id")
     )
     private List<Trips> trips;
+
     @ManyToOne
     @JoinColumn(name = "brand_id", nullable = false)
     private Brand brand;
+
     @ManyToOne
     @JoinColumn(name = "model_id", nullable = false)
     private Model model;
+
     @ManyToOne
     @JoinColumn(name = "color_id", nullable = false)
     private Color color;
-
+    @Override
+    public String toString() {
+        return "Autos{id=" + getId() + ", brand=" + brand + ", model=" + model + ", color=" + color + "}";
+    }
 }

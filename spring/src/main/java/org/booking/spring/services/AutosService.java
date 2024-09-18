@@ -72,6 +72,15 @@ public class AutosService {
         }
     }
 
+    public Autos createAutoForUser(Long userId, Autos auto) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        auto.setUser(user); // Прив'язуємо автомобіль до користувача
+        return repository.save(auto); // Зберігаємо автомобіль у базі
+    }
+    public AutoDto returnAutoDto(Autos auto) {
+        return new AutoDto(auto.getId(), auto.getBrand(), auto.getModel(), auto.getColor());
+    }
 /*
     public List<AutoDto> getAllAutos() {
         List<Autos> autosList = repository.findAll();
@@ -85,9 +94,7 @@ public class AutosService {
         return new AutoDto(auto.getId(), auto.getBrand(), auto.getModel(), auto.getColor());
     }
 
-    public AutoDto returnAutoDto(Autos auto) {
-        return new AutoDto(auto.getId(), auto.getBrand(), auto.getModel(), auto.getColor());
-    }
+
 
     public List<AutoDto> getAutosByUserId(Long userId) {
         List<Autos> autosList = repository.findByUserId(userId);
@@ -98,12 +105,7 @@ public class AutosService {
 
     }
 
-    public Autos createAutoForUser(Long userId, Autos auto) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-        auto.setUser(user); // Прив'язуємо автомобіль до користувача
-        return repository.save(auto); // Зберігаємо автомобіль у базі
-    }
+
 
     @Transactional
     public AutoDto updateAuto(Long autoId, Autos updatedAuto) {

@@ -13,6 +13,7 @@ import io.jsonwebtoken.security.Keys;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
+import java.util.Optional;
 
 import static io.jsonwebtoken.Jwts.*;
 
@@ -41,7 +42,44 @@ public class JwtUserService {
                 .signWith(key)
                 .compact();
     }
+    public boolean isTokenExpired(Claims claims) {
+        Date expiration = claims.getExpiration();
+        return expiration.before(new Date());
+    }
+    public User getUserData(String token) throws Exception {
+        boolean flag = true;
+        Claims claims = parseToken(token);
+        if (claims != null) {
+            if (!isTokenExpired(claims)) {
+                String userIdString = claims.getSubject();
+                Long userId = Long.parseLong(userIdString);
+                Optional<User> userOptional = userRepository.findById(userId);
+                if (userOptional.isPresent()) {
+                    return userOptional.get();
+                }
 
+            }
+            else flag=false;
+
+        }
+        else flag=false;
+        if(!flag)
+            throw new Exception("token");
+        return null;
+
+    }
+    public Claims parseToken(String token) {
+        try {
+            Key key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
+            return Jwts.parser()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+        } catch (Exception e) {
+            return null;
+        }
+    }
     public UserLoginResponse signIn(SignInRequest signInRequest) {
         User user = userRepository.findByEmail(signInRequest.getEmail()).orElseThrow(() -> new IllegalArgumentException("User с указанным email не найден"));
         if (!passwordEncoder.matches(signInRequest.getPassword(), user.getPassword())) {

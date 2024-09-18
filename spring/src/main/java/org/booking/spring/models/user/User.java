@@ -28,12 +28,10 @@ public class User extends BaseUserEntity {
     @JoinColumn(name = "id_permission", insertable = false, updatable = false)
     private UserPermissions userPermissions;
 
-    // Один користувач може мати декілька автомобілів
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<Autos> autos;
 
-    // Один користувач може мати декілька подорожей
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<Trips> trips;
@@ -48,5 +46,9 @@ public class User extends BaseUserEntity {
         if (name == null || name.trim().isEmpty()) {
             throw new IllegalArgumentException("Name cannot be empty");
         }
+    }
+    @Override
+    public String toString() {
+        return "User{id=" + getId() + ", name='" + name + "', surname='" + surname + "', dateOfBirthday=" + dateOfBirthday + ", gender='" + gender + "'}";
     }
 }

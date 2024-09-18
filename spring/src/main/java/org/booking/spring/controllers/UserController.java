@@ -30,6 +30,24 @@ public class UserController {
         this.jwtUserService = jwtUserService;
     }
 
+    @GetMapping("/user")
+    public ResponseEntity<?> getUserData(@RequestHeader("Authorization") String authorizationHeader) {
+        String token = authorizationHeader.substring(7);
+
+        try {
+            User user = jwtUserService.getUserData(token);
+            if (user != null) {
+                return ResponseEntity.ok(user);
+            } else {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+            }
+        }catch(Exception ex)
+        {
+            return ResponseEntity.ok("token");
+        }
+
+
+    }
     @PostMapping("/signUp")
     public ResponseEntity<?> userSignUp(@RequestBody SignUpRequest signUpRequest) {
 

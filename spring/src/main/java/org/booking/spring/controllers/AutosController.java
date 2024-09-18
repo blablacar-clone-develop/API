@@ -2,29 +2,75 @@ package org.booking.spring.controllers;
 
 
 import org.booking.spring.models.auto.Autos;
+import org.booking.spring.models.auto.Brand;
+import org.booking.spring.models.auto.Color;
+import org.booking.spring.models.auto.Model;
 import org.booking.spring.responses.DTO.AutoDto;
-import org.booking.spring.services.AutosService;
-import org.booking.spring.services.JwtUserService;
+import org.booking.spring.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/autos")
 public class AutosController {
     private final AutosService autosService;
-
+    private final BrandsService  brandsService;
+    private final ModelsService modelsService;
+    private final ColorService colorService;
     @Autowired
-    public AutosController(AutosService autosService) {
+    public AutosController(AutosService autosService, BrandsService brandsService, ModelsService modelsService, ColorService colorService) {
         this.autosService = autosService;
+        this.brandsService = brandsService;
+        this.modelsService = modelsService;
+        this.colorService = colorService;
     }
     @Autowired
     private JwtUserService jwtUserService;
 
+    @PutMapping("/create")
+    public ResponseEntity<AutoDto> createAuto(
+            @RequestHeader("Authorization") String token,
+            @RequestBody Map<String, Object> autoData
+    ) {
+        try {
+            String jwtToken = token.substring(7);  // Видаляємо "Bearer " із заголовка
+            Long userId = jwtUserService.extractUserId(jwtToken);  // Витягуємо userId з токена
 
+            // Отримуємо назви бренду та моделі з переданих даних
+            String brandName = (String) autoData.get("brand");
+            String modelName = (String) autoData.get("model");
+            Optional<Brand> brandOp = brandsService.findByName(brandName);
+            if (brandOp.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+            Brand brand = brandOp.get();
+            Optional<Model> modelOp = modelsService.findByNameAndBrandId(modelName, brand.getId());
+            if (modelOp.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+
+            Autos auto = new Autos();
+            auto.setBrand(brand);
+            auto.setModel(modelOp.get());
+            Integer idInteger = (Integer) autoData.get("id");
+            Long idLong = idInteger.longValue();
+
+            auto.setColor(colorService.findById(idLong).get());
+
+            Autos createdAuto = autosService.createAutoForUser(userId, auto);
+
+            return ResponseEntity.ok(autosService.returnAutoDto(createdAuto));
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);  // Обробляємо помилки
+        }
+    }
     ///Отримати всі автомобілі яки є в базі в разі якщо авторизований
 
 /*
@@ -62,22 +108,7 @@ public class AutosController {
     }
 
 
-    @PostMapping("/create")
-    public ResponseEntity<AutoDto> createAuto(
-            @RequestHeader("Authorization") String token,
-            @RequestBody Autos auto
-    ) {
-        try {
-            String jwtToken = token.substring(7);  // Видаляємо "Bearer " із заголовка
-            Long userId = jwtUserService.extractUserId(jwtToken);  // Витягуємо userId з токена
 
-            Autos createdAuto = autosService.createAutoForUser(userId, auto);  // Створюємо автомобіль для користувача
-            return ResponseEntity.ok(autosService.returnAutoDto(createdAuto));  // Повертаємо відповідь із створеним авто у вігляді ДТО
-
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);  // Обробляємо помилки
-        }
-    }
 
     //Видалити авто по Айді якщо воно нолежить юзеру
     @DeleteMapping("/delete/{id}")

@@ -51,7 +51,10 @@ public class SecurityConfig {
                                 "api/usersData/update/*",
                                 "api/autos/brands/all",
                                 "api/autos/brands/top",
-                                "api/autos/models/all/*"
+                                "api/autos/models/all/*",
+                                "api/autos/colors/all",
+                                "api/autos/create",
+                                "api/user"
                                         ).permitAll()
                                         .anyRequest().authenticated()
                 );

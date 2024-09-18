@@ -25,7 +25,7 @@ public class Trips {
     // Багато автомобілів належать одному користувачу
     @ManyToOne
     @JoinColumn(name = "user_id")
-    @JsonBackReference
+
     private User user;
 
     @Column(name = "passenger_count", nullable = false)
