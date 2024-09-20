@@ -18,7 +18,8 @@ public class UsersContact {
 
     @Column(name = "user_id", nullable = false)
     private Long userId;
-
     @Column(name = "phone_number", nullable = false)
     private String phoneNumber;
+    @Column(name = "country_code", nullable = false)
+    private String countryCode;
 }
