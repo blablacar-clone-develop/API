@@ -46,6 +46,7 @@ public class AutosController {
             String brandName = (String) autoData.get("brand");
             String modelName = (String) autoData.get("model");
             Optional<Brand> brandOp = brandsService.findByName(brandName);
+
             if (brandOp.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
             }
@@ -85,6 +86,53 @@ public class AutosController {
         } catch (Exception e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);  // Обробляємо помилки
         }
+    }
+
+    //Оновлення автомобіля за його ID
+    @PutMapping("/update/{autoId}")
+    public ResponseEntity<String> updateAuto(
+            @PathVariable Long autoId,
+            @RequestBody Map<String, Object> autoData,
+            @RequestHeader("Authorization") String token
+    ) {
+        try {
+            String jwtToken = token.substring(7);  // Видаляємо "Bearer " із заголовка
+            Long userId = jwtUserService.extractUserId(jwtToken);  // Витягуємо userId з токена
+
+            // Перевіряємо, чи є користувач власником автомобіля
+            if (!autosService.isUserOwnerOfAuto(autoId, userId)) {
+                return ResponseEntity.status(403).body("Користувач не є власником цього автомобіля");
+            }
+
+            // Отримуємо назви бренду та моделі з переданих даних
+            String brandName = (String) autoData.get("brand");
+            String modelName = (String) autoData.get("model");
+            Optional<Brand> brandOp = brandsService.findByName(brandName);
+
+            if (brandOp.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+
+            Brand brand = brandOp.get();
+            Optional<Model> modelOp = modelsService.findByNameAndBrandId(modelName, brand.getId());
+
+            if (modelOp.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+
+            Autos auto = new Autos();
+            auto.setBrand(brand);
+            auto.setModel(modelOp.get());
+            Integer idInteger = (Integer) autoData.get("id");
+            Long idLong = idInteger.longValue();
+
+            auto.setColor(colorService.findById(idLong).get());
+            autosService.updateAuto(userId, auto);
+        } catch (Exception ex) {
+            return ResponseEntity.status(403).body("Помилка авторизації");
+        }
+
+        return ResponseEntity.ok("Aвто успішно змінено");
     }
 
 

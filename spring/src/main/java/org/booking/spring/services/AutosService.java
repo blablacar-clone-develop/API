@@ -88,6 +88,24 @@ public class AutosService {
         return this.returnAutoDto(auto);
     }
 
+    @Transactional
+    public Autos updateAuto(Long autoId, Autos updatedAuto) {
+        // Знайти авто за ID
+        Autos existingAuto = repository.findById(autoId)
+                .orElseThrow(() -> new IllegalArgumentException("Автомобіль з ID " + autoId + " не знайдено"));
+
+        // Оновити поля
+        existingAuto.setBrand(updatedAuto.getBrand());
+        existingAuto.setModel(updatedAuto.getModel());
+        existingAuto.setColor(updatedAuto.getColor());
+
+        // Зберегти оновлений автомобіль
+        return repository.save(existingAuto);
+    }
+
+
+
+
 
 /*
     public List<AutoDto> getAllAutos() {

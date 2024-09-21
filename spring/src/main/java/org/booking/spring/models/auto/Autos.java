@@ -41,6 +41,7 @@ public class Autos extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "color_id", nullable = false)
     private Color color;
+
     @Override
     public String toString() {
         return "Autos{id=" + getId() + ", brand=" + brand + ", model=" + model + ", color=" + color + "}";
