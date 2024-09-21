@@ -135,6 +135,24 @@ public class AutosController {
         return ResponseEntity.ok("Aвто успішно змінено");
     }
 
+    //Видалити авто по Айді якщо воно нолежить юзеру
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<String> deleteAuto(@PathVariable Long id, @RequestHeader("Authorization") String token) {
+        try {
+            String jwtToken = token.substring(7);  // Видаляємо "Bearer " із заголовка
+            Long userId = jwtUserService.extractUserId(jwtToken);  // Витягуємо userId з токена
+
+            // Перевіряємо, чи є користувач власником автомобіля
+            if (!autosService.isUserOwnerOfAuto(id, userId)) {
+                return ResponseEntity.status(403).body("Користувач не є власником цього автомобіля");
+            }
+
+            autosService.deleteAuto(id);
+            return ResponseEntity.ok("Автомобіль успішно видалено");
+        } catch (IllegalArgumentException ex) {
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        }
+    }
 
 
 /*

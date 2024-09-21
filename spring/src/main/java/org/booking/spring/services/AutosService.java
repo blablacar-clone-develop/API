@@ -103,7 +103,14 @@ public class AutosService {
         return repository.save(existingAuto);
     }
 
-
+    //Видалити авто по ІД
+    @Transactional
+    public void deleteAuto(Long autoId) {
+        if (!repository.existsById(autoId)) {
+            throw new IllegalArgumentException("Автомобіль з ID " + autoId + " не знайдено");
+        }
+        repository.deleteById(autoId);
+    }
 
 
 
