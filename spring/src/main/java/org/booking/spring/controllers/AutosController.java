@@ -71,7 +71,23 @@ public class AutosController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);  // Обробляємо помилки
         }
     }
-    ///Отримати всі автомобілі яки є в базі в разі якщо авторизований
+
+    //Отримання автомобіля за його ID
+    @GetMapping("/getByAutoId/{autoId}")
+    public ResponseEntity<AutoDto> getAutosById(
+            @RequestHeader("Authorization") String token,
+            @PathVariable Long autoId
+    ) {
+        try {
+            AutoDto auto = autosService.getAutoById(autoId);
+            return ResponseEntity.ok(auto);
+
+        } catch (Exception e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);  // Обробляємо помилки
+        }
+    }
+
+
 
 /*
     //Отримання автомобілів за ID користувача

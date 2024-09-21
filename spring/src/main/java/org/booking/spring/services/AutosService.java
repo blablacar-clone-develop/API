@@ -78,9 +78,17 @@ public class AutosService {
         auto.setUser(user); // Прив'язуємо автомобіль до користувача
         return repository.save(auto); // Зберігаємо автомобіль у базі
     }
+
     public AutoDto returnAutoDto(Autos auto) {
         return new AutoDto(auto.getId(), auto.getBrand(), auto.getModel(), auto.getColor());
     }
+
+    public AutoDto getAutoById(Long id) {
+        Autos auto = repository.findById(id).orElse(null);
+        return this.returnAutoDto(auto);
+    }
+
+
 /*
     public List<AutoDto> getAllAutos() {
         List<Autos> autosList = repository.findAll();
