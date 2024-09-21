@@ -92,8 +92,9 @@ public class AutosController {
     @PutMapping("/update/{autoId}")
     public ResponseEntity<String> updateAuto(
             @PathVariable Long autoId,
-            @RequestBody Map<String, Object> autoData,
-            @RequestHeader("Authorization") String token
+            @RequestHeader("Authorization") String token,
+            @RequestBody Map<String, Object> autoData
+
     ) {
         try {
             String jwtToken = token.substring(7);  // Видаляємо "Bearer " із заголовка
@@ -127,8 +128,9 @@ public class AutosController {
             Long idLong = idInteger.longValue();
 
             auto.setColor(colorService.findById(idLong).get());
-            autosService.updateAuto(userId, auto);
+            autosService.updateAuto(autoId, auto);
         } catch (Exception ex) {
+            System.out.println(ex.getMessage());
             return ResponseEntity.status(403).body("Помилка авторизації");
         }
 

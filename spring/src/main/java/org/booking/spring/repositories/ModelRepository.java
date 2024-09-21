@@ -13,7 +13,10 @@ import java.util.Optional;
 public interface ModelRepository extends JpaRepository<Model, Long> {
     Optional<Model> findByName(String name);
 
-    @Query(value = "SELECT c.name FROM cars_models c WHERE c.brand_id = :brandId", nativeQuery = true)
+//    @Query(value = "SELECT c.name FROM cars_models c WHERE c.brand_id = :brandId", nativeQuery = true)
+//    List<String> findNamesByBrandId(@Param("brandId") Long brandId);
+
+    @Query("SELECT m.name FROM Model m WHERE m.brand.id = :brandId")
     List<String> findNamesByBrandId(@Param("brandId") Long brandId);
 
     Optional<Model> findByNameAndBrandId(String modelName, Long brandId);
