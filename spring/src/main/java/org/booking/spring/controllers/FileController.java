@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 
@@ -28,7 +30,9 @@ public class FileController {
     );
 
     @PostMapping("/upload/avatar")
-    public ResponseEntity<String> save(@RequestParam("avatar") MultipartFile file) {
+    public ResponseEntity<String> save(
+            @RequestParam("avatar") MultipartFile file
+    ) {
         try {
             // Перевірка типу файлу
             String contentType = file.getContentType();
@@ -37,7 +41,16 @@ public class FileController {
                         .body("Недозволений тип файлу. Дозволені типи: JPEG, PNG, GIF.");
             }
 
-            String fileName = file.getOriginalFilename();
+            //String fileName = file.getOriginalFilename();
+
+            // Отримуємо поточну дату і час
+            LocalDateTime now = LocalDateTime.now();
+
+            // Форматуємо дату і час у потрібний формат
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+
+            String fileName = now.format(formatter) + "." + file.getContentType().split("/")[1];
+
             // Викликаємо метод збереження файлу
             String filePath = storageService.put("avatar", fileName, file);
 
