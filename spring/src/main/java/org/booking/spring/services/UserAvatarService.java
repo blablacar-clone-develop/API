@@ -5,6 +5,7 @@ import org.booking.spring.repositories.UserAvatarRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -26,6 +27,10 @@ public class UserAvatarService {
     ///Збереження аватару користувача
     public void SaveAvatar(Avatars avatar) {
         userAvatarRepository.save(avatar);
+    }
+
+    public List<Avatars> getAvatarsByUserIds(List<Long> usersIds) {
+        return userAvatarRepository.findByUserIds(usersIds);
     }
 
 
