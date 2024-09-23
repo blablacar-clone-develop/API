@@ -29,6 +29,7 @@ public class UserAvatarService {
         userAvatarRepository.save(avatar);
     }
 
+    ///Отримати список аватарок за списком користувацький Id
     public List<Avatars> getAvatarsByUserIds(List<Long> usersIds) {
         return userAvatarRepository.findByUserIds(usersIds);
     }

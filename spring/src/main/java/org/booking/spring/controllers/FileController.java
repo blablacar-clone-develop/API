@@ -2,8 +2,10 @@ package org.booking.spring.controllers;
 
 
 import lombok.RequiredArgsConstructor;
+import org.booking.spring.models.user.Avatars;
 import org.booking.spring.services.JwtUserService;
 import org.booking.spring.services.StorageService;
+import org.booking.spring.services.UserAvatarService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +24,8 @@ public class FileController {
     @Autowired
     private JwtUserService jwtUserService;
     private final StorageService storageService;
+
+    private final UserAvatarService userAvatarService;
 
     // Дозволені типи файлів для завантаження для аватару
     private static final List<String> ALLOWED_CONTENT_TYPES_FOR_AVATAR = Arrays.asList(
@@ -60,7 +64,13 @@ public class FileController {
             // Викликаємо метод збереження файлу
             String filePath = storageService.put("avatar", fileName, file);
 
-            return ResponseEntity.ok(filePath);
+            Avatars userAvatar = new Avatars();
+            userAvatar.setUrl(filePath);
+            userAvatar.setId(userId);
+
+            userAvatarService.SaveAvatar(userAvatar);
+
+            return ResponseEntity.ok("Аватар успішно завантажено");
         } catch (Exception ex) {
             // Повертаємо статус 400 Bad Request при помилках
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
