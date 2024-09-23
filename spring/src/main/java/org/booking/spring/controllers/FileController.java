@@ -76,5 +76,28 @@ public class FileController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
         }
     }
+
+    @DeleteMapping("/delete/avatar")
+    public ResponseEntity<String> deleteAvatar(
+            @RequestHeader("Authorization") String token
+    ){
+        try {
+            String jwtToken = token.substring(7);  // Видаляємо "Bearer " із заголовка
+            Long userId = jwtUserService.extractUserId(jwtToken);  // Витягуємо userId з токена
+
+            if (userId == null) {
+                return ResponseEntity.status(403).body("Authorization error, please login and try again");
+            }
+
+
+
+
+            return ResponseEntity.ok("Видалено успішно");
+        }catch (Exception ex) {
+        // Повертаємо статус 400 Bad Request при помилках
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+        }
+    }
+
 }
 
