@@ -23,6 +23,10 @@ public class UserAvatarService {
         return deletedRows > 0;  // Повертає true, якщо хоча б один рядок був видалений
     }
 
+    ///Збереження аватару користувача
+    public void SaveAvatar(Avatars avatar) {
+        userAvatarRepository.save(avatar);
+    }
 
 
 }
