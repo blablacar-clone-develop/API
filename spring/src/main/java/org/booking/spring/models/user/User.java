@@ -36,6 +36,11 @@ public class User extends BaseUserEntity {
     @JsonManagedReference
     private List<Trips> trips;
 
+    //Зв'язок з аватаркою
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private Avatars avatar;
+
     @Override
     protected void onUpdate() {
         super.onUpdate();

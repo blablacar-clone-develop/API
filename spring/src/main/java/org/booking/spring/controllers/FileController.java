@@ -2,13 +2,12 @@ package org.booking.spring.controllers;
 
 
 import lombok.RequiredArgsConstructor;
+import org.booking.spring.services.JwtUserService;
 import org.booking.spring.services.StorageService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
@@ -20,7 +19,8 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/files")
 public class FileController {
-
+    @Autowired
+    private JwtUserService jwtUserService;
     private final StorageService storageService;
 
     // Дозволені типи файлів для завантаження для аватару
@@ -31,9 +31,17 @@ public class FileController {
 
     @PostMapping("/upload/avatar")
     public ResponseEntity<String> save(
+            @RequestHeader("Authorization") String token,
             @RequestParam("avatar") MultipartFile file
     ) {
         try {
+            String jwtToken = token.substring(7);  // Видаляємо "Bearer " із заголовка
+            Long userId = jwtUserService.extractUserId(jwtToken);  // Витягуємо userId з токена
+
+            if (userId == null) {
+                return ResponseEntity.status(403).body("Authorization error, please login and try again");
+            }
+
             // Перевірка типу файлу
             String contentType = file.getContentType();
             if (contentType == null || !ALLOWED_CONTENT_TYPES_FOR_AVATAR.contains(contentType)) {
@@ -41,15 +49,13 @@ public class FileController {
                         .body("Недозволений тип файлу. Дозволені типи: JPEG, PNG, GIF.");
             }
 
-            //String fileName = file.getOriginalFilename();
-
             // Отримуємо поточну дату і час
             LocalDateTime now = LocalDateTime.now();
 
             // Форматуємо дату і час у потрібний формат
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
 
-            String fileName = now.format(formatter) + "." + file.getContentType().split("/")[1];
+            String fileName = userId + "_" + now.format(formatter) + "." + file.getContentType().split("/")[1];
 
             // Викликаємо метод збереження файлу
             String filePath = storageService.put("avatar", fileName, file);
