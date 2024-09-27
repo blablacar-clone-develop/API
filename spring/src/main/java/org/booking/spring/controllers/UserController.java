@@ -2,11 +2,15 @@ package org.booking.spring.controllers;
 
 import org.booking.spring.models.user.AccountInfo;
 import org.booking.spring.models.user.User;
+import org.booking.spring.models.user.UserVerification;
 import org.booking.spring.models.user.UsersContact;
+import org.booking.spring.repositories.UserVerificationRepository;
 import org.booking.spring.requests.auth.SignInRequest;
 import org.booking.spring.requests.auth.SignUpRequest;
 import org.booking.spring.requests.auth.UpdatedUserRequest;
+import org.booking.spring.responses.ResponseUserVerification;
 import org.booking.spring.responses.UserLoginResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,12 +24,15 @@ public class UserController {
 
     private final UserService userService;
     private final UsersContactService usersContactService;
+    @Autowired
+    private  UserVerificationRepository userVerificationRepository;
     private final AccountInfoService accountInfoService;
     private final JwtUserService jwtUserService;
 
-    public UserController(UserService userService, UsersContactService usersContactService, AccountInfoService accountInfoService, JwtUserService jwtUserService) {
+    public UserController(UserService userService, UsersContactService usersContactService,  AccountInfoService accountInfoService, JwtUserService jwtUserService) {
         this.userService = userService;
         this.usersContactService = usersContactService;
+
         this.accountInfoService = accountInfoService;
         this.jwtUserService = jwtUserService;
     }
@@ -47,6 +54,28 @@ public class UserController {
         }
 
 
+    }
+    @GetMapping("/user/verification/{id}")
+    public ResponseEntity<?> getUserVerification(@PathVariable("id") Long id) {
+        try {
+            UserVerification userVerification = userVerificationRepository.findByUserId(id);
+
+            if (userVerification == null) {
+                ResponseUserVerification response = new ResponseUserVerification(false, false, false);
+                return ResponseEntity.ok(response);
+            }
+
+            ResponseUserVerification response = new ResponseUserVerification(
+                    userVerification.getEmailVerified(),
+                    userVerification.getPhoneVerified(),
+                    userVerification.getDocumentVerified()
+            );
+
+            return ResponseEntity.ok(response);
+
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+        }
     }
     @PostMapping("/signUp")
     public ResponseEntity<?> userSignUp(@RequestBody SignUpRequest signUpRequest) {

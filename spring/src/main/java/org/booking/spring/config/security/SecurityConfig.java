@@ -54,7 +54,8 @@ public class SecurityConfig {
                                 "api/autos/models/all/*",
                                 "api/autos/colors/all",
                                 "api/autos/create",
-                                "api/user"
+                                "api/user",
+                                "api/user/verification/*"
                                         ).permitAll()
                                         .anyRequest().authenticated()
                 );
