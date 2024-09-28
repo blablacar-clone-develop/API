@@ -1,6 +1,7 @@
 package org.booking.spring.services;
 
 import org.booking.spring.models.user.Avatars;
+import org.booking.spring.models.user.User;
 import org.booking.spring.repositories.UserAvatarRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,9 +14,11 @@ public class UserAvatarService {
 
     @Autowired
     private UserAvatarRepository userAvatarRepository;
+    @Autowired
+    private UserService userService;
 
-    public Optional<Avatars> getUserAvatarById(long id) {
-        return userAvatarRepository.findById(id);
+    public Avatars getUserAvatarById(long id) {
+        return userAvatarRepository.findById(id).orElse(null);
     }
 
     ///Видалення аватарки по юзер айді
@@ -25,7 +28,11 @@ public class UserAvatarService {
     }
 
     ///Збереження аватару користувача
-    public void SaveAvatar(Avatars avatar) {
+    public void SaveAvatar(String filePath, Long userId) {
+        User user = userService.findUserById(userId);
+        Avatars avatar = new Avatars();
+        avatar.setUrl(filePath);
+        avatar.setUser(user);
         userAvatarRepository.save(avatar);
     }
 

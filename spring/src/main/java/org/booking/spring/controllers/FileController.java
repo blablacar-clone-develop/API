@@ -33,6 +33,7 @@ public class FileController {
             "image/png"
     );
 
+
     @PostMapping("/upload/avatar")
     public ResponseEntity<String> save(
             @RequestHeader("Authorization") String token,
@@ -64,11 +65,7 @@ public class FileController {
             // Викликаємо метод збереження файлу
             String filePath = storageService.put("avatar", fileName, file);
 
-            Avatars userAvatar = new Avatars();
-            userAvatar.setUrl(filePath);
-            userAvatar.setId(userId);
-
-            userAvatarService.SaveAvatar(userAvatar);
+            userAvatarService.SaveAvatar(filePath, userId);
 
             return ResponseEntity.ok("Аватар успішно завантажено");
         } catch (Exception ex) {
@@ -96,6 +93,25 @@ public class FileController {
         }catch (Exception ex) {
         // Повертаємо статус 400 Bad Request при помилках
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+        }
+    }
+
+    @GetMapping("/avatar")
+    public String getUrlAvatar(
+            @RequestHeader("Authorization") String token
+    ) {
+        try{
+            String jwtToken = token.substring(7);  // Видаляємо "Bearer " із заголовка
+            Long userId = jwtUserService.extractUserId(jwtToken);  // Витягуємо userId з токена
+
+            if (userId == null) {
+                return "Authorization error, please login and try again";
+            }
+
+            return userAvatarService.getUserAvatarById(userId).getUrl();
+
+        } catch (Exception e) {
+            return "ERROR";
         }
     }
 

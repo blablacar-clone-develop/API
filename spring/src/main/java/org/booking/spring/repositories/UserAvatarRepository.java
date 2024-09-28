@@ -22,6 +22,7 @@ public interface UserAvatarRepository extends JpaRepository<Avatars, Long> {
     @Query("SELECT a FROM Avatars a WHERE a.user.id IN :usersIds")
     List<Avatars> findByUserIds(@Param("usersIds") List<Long> usersIds);
 
-
+    @Query("SELECT a FROM Avatars a WHERE a.user.id = :userId")
+    Avatars findByUserId(@Param("userId") Long userId);
 
 }

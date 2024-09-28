@@ -41,6 +41,7 @@ public class SecurityConfig {
                                 "api/signIn",
                                 "hi",
                                 "api/files/upload/avatar",
+                                "api/files/avatar",
                                 "api/autos/getAllAutos",
                                 "api/autos/create",
                                 "api/autos/user/*",

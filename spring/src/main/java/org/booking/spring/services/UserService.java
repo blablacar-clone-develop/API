@@ -18,6 +18,11 @@ public class UserService {
         return userRepository.findById(id);
     }
 
+    public User findUserById(Long id) {
+        return userRepository.getReferenceById(id);
+    }
+
+
     public User registerNewUserAccount(SignUpRequest signUpRequest) {
         if (signUpRequest.getName() == null || signUpRequest.getSurname() == null ||
                 signUpRequest.getEmail() == null || signUpRequest.getPassword() == null ||
