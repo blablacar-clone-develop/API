@@ -39,6 +39,33 @@ public class UserVerification {
     @Column(name = "document_verification_date", nullable = true)
     private LocalDateTime documentVerificationDate;
 
+    // Сеттер з автоматичним оновленням дати
+    public void setEmailVerified(Boolean emailVerified) {
+        this.emailVerified = emailVerified;
+
+        if (emailVerified && emailVerificationDate == null) {
+            this.emailVerificationDate = LocalDateTime.now();
+        }
+    }
+
+    // Сеттер з автоматичним оновленням дати
+    public void setPhoneVerified(Boolean phoneVerified) {
+        this.phoneVerified = phoneVerified;
+
+        // Сеттер з автоматичним оновленням дати
+        if (phoneVerified && phoneVerificationDate == null) {
+            this.phoneVerificationDate = LocalDateTime.now();
+        }
+    }
+
+    // Сеттер з автоматичним оновленням дати
+    public void setDocumentVerified(Boolean documentVerified) {
+        this.documentVerified = documentVerified;
+        // Якщо documentVerified стає true, оновлюємо documentVerificationDate
+        if (documentVerified && documentVerificationDate == null) {
+            this.documentVerificationDate = LocalDateTime.now();
+        }
+    }
 
 }
 

@@ -93,6 +93,14 @@
             <artifactId>minio</artifactId>
             <version>8.5.9</version>
         </dependency>
+        <!-- Для відправки електронних листів -->
+        <dependency>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>javax.mail</artifactId>
+            <version>1.6.2</version>
+        </dependency>
+
+
     </dependencies>
 
     <build>

@@ -55,6 +55,7 @@ public class UserController {
 
 
     }
+
     @GetMapping("/user/verification/{id}")
     public ResponseEntity<?> getUserVerification(@PathVariable("id") Long id) {
         try {
@@ -83,6 +84,14 @@ public class UserController {
         try {
             User user = userService.registerNewUserAccount(signUpRequest);
             UserLoginResponse userLoginResponse = jwtUserService.signUp(user);
+
+            //костиль винести  в сервіс
+            UserVerification userVerification = new UserVerification();
+            userVerification.setUserId(user.getId());
+            userVerification.setPhoneVerified(true);
+            userVerificationRepository.save(userVerification);
+            //костиль винести  в сервіс кінець
+
             return ResponseEntity.ok(userLoginResponse);
         } catch(Exception ex)
         {
