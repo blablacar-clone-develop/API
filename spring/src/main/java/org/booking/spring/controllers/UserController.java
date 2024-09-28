@@ -28,13 +28,15 @@ public class UserController {
     private  UserVerificationRepository userVerificationRepository;
     private final AccountInfoService accountInfoService;
     private final JwtUserService jwtUserService;
+    private final UserVerificationService userVerificationService;
 
-    public UserController(UserService userService, UsersContactService usersContactService,  AccountInfoService accountInfoService, JwtUserService jwtUserService) {
+    public UserController(UserService userService, UsersContactService usersContactService, AccountInfoService accountInfoService, JwtUserService jwtUserService, UserVerificationService userVerificationService) {
         this.userService = userService;
         this.usersContactService = usersContactService;
 
         this.accountInfoService = accountInfoService;
         this.jwtUserService = jwtUserService;
+        this.userVerificationService = userVerificationService;
     }
 
     @GetMapping("/user")
@@ -78,6 +80,7 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
         }
     }
+
     @PostMapping("/signUp")
     public ResponseEntity<?> userSignUp(@RequestBody SignUpRequest signUpRequest) {
 
@@ -85,12 +88,7 @@ public class UserController {
             User user = userService.registerNewUserAccount(signUpRequest);
             UserLoginResponse userLoginResponse = jwtUserService.signUp(user);
 
-            //костиль винести  в сервіс
-            UserVerification userVerification = new UserVerification();
-            userVerification.setUserId(user.getId());
-            userVerification.setPhoneVerified(true);
-            userVerificationRepository.save(userVerification);
-            //костиль винести  в сервіс кінець
+            userVerificationService.addInfoAboutNewUserById(user.getId());
 
             return ResponseEntity.ok(userLoginResponse);
         } catch(Exception ex)
@@ -99,6 +97,7 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
         }
     }
+
     @PostMapping("/signIn")
     public ResponseEntity<?> userSignIn(@RequestBody SignInRequest signInRequest) {
         try {
@@ -109,6 +108,7 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
         }
     }
+
     @PutMapping("usersData/update/{userId}")
     public ResponseEntity<User> updateUserData(@PathVariable Long userId, @RequestBody UpdatedUserRequest updatedUserRequest) {
         Optional<User> existingUser = userService.getUserById(userId);

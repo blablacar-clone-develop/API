@@ -13,9 +13,11 @@ import java.util.Optional;
 public class UserService {
     @Autowired
     private UserRepository userRepository;
+
     public Optional<User> getUserById(Long id) {
         return userRepository.findById(id);
     }
+
     public User registerNewUserAccount(SignUpRequest signUpRequest) {
         if (signUpRequest.getName() == null || signUpRequest.getSurname() == null ||
                 signUpRequest.getEmail() == null || signUpRequest.getPassword() == null ||
