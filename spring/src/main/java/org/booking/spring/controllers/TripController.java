@@ -1,10 +1,12 @@
 package org.booking.spring.controllers;
 
 import org.booking.spring.models.trips.*;
-
+import java.util.ArrayList;
+import java.util.List;
 import org.booking.spring.repositories.OptionsRepository;
 import org.booking.spring.repositories.TripAgreementRepository;
 import org.booking.spring.repositories.TripDurationAndDistanceRepository;
+import org.booking.spring.requests.auth.SearchTripRequest;
 import org.booking.spring.responses.DTO.AutoDto;
 import org.booking.spring.responses.DTO.TripDto;
 import org.booking.spring.services.JwtUserService;
@@ -54,22 +56,6 @@ public class TripController {
         }
     }
 
-    private double parseDistance(String distanceStr) {
-        // Видаляємо все, що не є цифрою або десятковою крапкою
-        String cleanedDistance = distanceStr.replaceAll("[^\\d.]", "");
-        return Double.parseDouble(cleanedDistance);
-    }
-
-
-    private double parseDuration(String durationStr) {
-        // Видаляємо непотрібні символи і працюємо з частинами
-        durationStr = durationStr.replace(" ч.", "").replace(" мин.", "");
-        String[] parts = durationStr.split(" ");  // Розділяємо години та хвилини
-        double hours = Double.parseDouble(parts[0]);  // Години
-        double minutes = Double.parseDouble(parts[1]) / 60;  // Хвилини в частку години
-        return hours + minutes;  // Повертаємо загальний час у годинах
-    }
-    
     @PostMapping("/create")
     public ResponseEntity<?> createTrip(
             @RequestHeader("Authorization") String token,
@@ -125,13 +111,9 @@ public class TripController {
 
             Map<String, Object> selectedRoute = (Map<String, Object>) tripData.get("selectedRoute");
             TripDurationAndDistance  tripDurationAndDistance = new TripDurationAndDistance();
-            String distanceStr = (String) selectedRoute.get("distance");
-            double distance = parseDistance(distanceStr);
 
-            String durationStr = (String) selectedRoute.get("duration");
-            double duration = parseDuration(durationStr);
-            tripDurationAndDistance.setDistance(distance);
-            tripDurationAndDistance.setDuration(duration);
+            tripDurationAndDistance.setDistance((String) selectedRoute.get("distance"));
+            tripDurationAndDistance.setDuration((String) selectedRoute.get("duration"));
 
             TripAgreement tripAgreement = new TripAgreement();
             tripAgreement.setIsAgreed(tripData.get("selectBooking") != "each");
@@ -164,5 +146,21 @@ public class TripController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
+    @PostMapping("/getSearchTrip")
+    public List<Trips> getSearchTrip(@RequestBody SearchTripRequest request) {
+
+        System.out.println("Searching trips from: " + request.getFrom() + " to: " + request.getTo());
+        System.out.println("Passengers: " + request.getPassengers().size());
+
+        String startCity = request.getFrom().getCity();
+        String startState = request.getFrom().getCountry();
+        String finishCity = request.getTo().getCity();
+        String finishState = request.getTo().getCountry();
+        LocalDate departureDate = request.getDate();
+        int passengerCount = request.getPassengers().size();
+
+        return tripService.searchTrips(departureDate, passengerCount, startCity, startState, finishCity, finishState);
+    }
+
 
 }

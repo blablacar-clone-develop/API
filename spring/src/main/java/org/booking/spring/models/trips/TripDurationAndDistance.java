@@ -16,11 +16,11 @@ public class TripDurationAndDistance {
 
     // Час на дорогу (у хвилинах або годинах, як вирішите)
     @Column(name = "duration", nullable = false)
-    private Double duration;
+    private String duration;
 
     // Відстань у кілометрах
     @Column(name = "distance", nullable = false)
-    private Double distance;
+    private String distance;
 
     // Зв'язок з таблицею Trips (ID поїздки)
     @OneToOne

@@ -57,7 +57,8 @@ public class SecurityConfig {
                                 "api/autos/create",
                                 "api/user",
                                 "api/user/verification/*",
-                                "api/trips/create"
+                                "api/trips/create",
+                                "api/trips/getSearchTrip"
                                         ).permitAll()
                                         .anyRequest().authenticated()
                 );
