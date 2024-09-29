@@ -65,7 +65,7 @@ public class FileController {
             // Викликаємо метод збереження файлу
             String filePath = storageService.put("avatar", fileName, file);
 
-            userAvatarService.SaveAvatar(filePath, userId);
+            userAvatarService.SaveAvatar(filePath, fileName,userId);
 
             return ResponseEntity.ok("Аватар успішно завантажено");
         } catch (Exception ex) {
@@ -96,6 +96,11 @@ public class FileController {
         }
     }
 
+
+    /**
+     * @param token Beurer token
+     * @return String URL to user avatar
+     */
     @GetMapping("/avatar")
     public String getUrlAvatar(
             @RequestHeader("Authorization") String token

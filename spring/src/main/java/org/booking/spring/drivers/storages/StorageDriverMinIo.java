@@ -90,5 +90,24 @@ public class StorageDriverMinIo implements StorageDriverInterface {
             return null; // Помилка завантаження файлу
         }
     }
+
+
+    /**
+     * @param bucketName корзина в якій зберігається файл
+     * @param fileName ім'я файлу
+     * @return boolean результат видалення об'єкту
+     */
+    @Override
+    public boolean delete(String bucketName, String fileName) {
+        try {
+            minioClient.removeObject(
+                    RemoveObjectArgs.builder().bucket(bucketName).object(fileName).build()
+            );
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }
 

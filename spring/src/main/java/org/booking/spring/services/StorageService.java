@@ -59,7 +59,7 @@ public class StorageService {
     }
 
     /**
-     * Обгортка для драйвера за замовчуванням
+     * Обгортка для драйверу на видалення файлів
      * @param bucketName ім'я бакету
      * @param fileName ім'я файлу
      * @param file файл для завантаження
@@ -68,4 +68,17 @@ public class StorageService {
     public String put(String bucketName, String fileName, MultipartFile file) {
         return driver.put(bucketName, fileName, file);
     }
+
+
+    /**
+     * Обгортка для драйверу на видалення файлів
+     * @param bucketName ім'я бакету
+     * @param fileName ім'я файлу
+     * @return
+     */
+    public Boolean delete(String bucketName, String fileName) {
+        return driver.delete(bucketName, fileName);
+    }
+
+
 }

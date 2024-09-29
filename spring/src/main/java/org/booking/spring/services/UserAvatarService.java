@@ -16,22 +16,38 @@ public class UserAvatarService {
     private UserAvatarRepository userAvatarRepository;
     @Autowired
     private UserService userService;
+    @Autowired
+    private StorageService storageService;
+
 
     public Avatars getUserAvatarById(long id) {
         return userAvatarRepository.findById(id).orElse(null);
     }
 
-    ///Видалення аватарки по юзер айді
+    public boolean deleteUserAvatarFormStorageByUserId(long userid) {
+        Avatars avatars = userAvatarRepository.findByUserId(userid);
+        return storageService.delete("avatar", avatars.getFilename());
+    }
+
+    ///Видалення аватарки по юзер айді filestorage & DB
     public boolean deleteAvatarByUserId(Long userId) {
+        Avatars avatars = userAvatarRepository.findByUserId(userId);
+        if (avatars == null) {return false;}
+        boolean isDeleted = storageService.delete("avatar", avatars.getFilename());
         int deletedRows = userAvatarRepository.deleteByUserId(userId);
-        return deletedRows > 0;  // Повертає true, якщо хоча б один рядок був видалений
+        return deletedRows > 0 && isDeleted;
     }
 
     ///Збереження аватару користувача
-    public void SaveAvatar(String filePath, Long userId) {
+    public void SaveAvatar(String filePath, String fileName,Long userId) {
         User user = userService.findUserById(userId);
         Avatars avatar = new Avatars();
         avatar.setUrl(filePath);
+        avatar.setFilename(fileName);
+
+        ///Видалити наявний аватар із сховища
+        deleteAvatarByUserId(userId);
+
         avatar.setUser(user);
         userAvatarRepository.save(avatar);
     }

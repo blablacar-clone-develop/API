@@ -1,9 +1,6 @@
 package org.booking.spring.models.user;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -25,4 +22,6 @@ public class Avatars extends BaseEntity {
 
     private String url;  // URL аватарки
 
+    @Column(name = "file_name")
+    private String filename; //
 }

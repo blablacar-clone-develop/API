@@ -4,4 +4,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface StorageDriverInterface {
     public String put (String bucketName, String fileName, MultipartFile file);
+    public boolean delete(String bucketName, String fileName);
+
+
 }
