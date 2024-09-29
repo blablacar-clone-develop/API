@@ -33,6 +33,7 @@ public class TripController {
     private final TravelPointsService travelPointsService;
     private final UserService userService;
     private final JwtUserService jwtUserService;
+
     public TripController(TripService tripService, OptionsRepository optionsRepository, TripDurationAndDistanceRepository tripDurationAndDistanceRepository, TripAgreementRepository tripAgreementRepository, TravelPointsService travelPointsService, UserService userService, JwtUserService jwtUserService) {
         this.tripService = tripService;
         this.optionsRepository = optionsRepository;
@@ -42,6 +43,7 @@ public class TripController {
         this.userService = userService;
         this.jwtUserService = jwtUserService;
     }
+
     private Double convertToDouble(Object value) {
         if (value instanceof Integer) {
             return ((Integer) value).doubleValue();
@@ -67,6 +69,7 @@ public class TripController {
         double minutes = Double.parseDouble(parts[1]) / 60;  // Хвилини в частку години
         return hours + minutes;  // Повертаємо загальний час у годинах
     }
+    
     @PostMapping("/create")
     public ResponseEntity<?> createTrip(
             @RequestHeader("Authorization") String token,

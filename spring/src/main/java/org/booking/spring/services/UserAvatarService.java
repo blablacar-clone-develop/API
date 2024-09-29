@@ -21,7 +21,7 @@ public class UserAvatarService {
 
 
     public Avatars getUserAvatarById(long id) {
-        return userAvatarRepository.findById(id).orElse(null);
+        return userAvatarRepository.findByUserId(id);
     }
 
     public boolean deleteUserAvatarFormStorageByUserId(long userid) {
