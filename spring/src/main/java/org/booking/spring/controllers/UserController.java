@@ -98,7 +98,6 @@ public class UserController {
                     "verificationCode :" + verificationCode
             );
 
-
             return verificationCode;
 
         } catch (Exception e) {
@@ -106,6 +105,8 @@ public class UserController {
             return null;
         }
     }
+
+
 
     @PostMapping("/signUp")
     public ResponseEntity<?> userSignUp(@RequestBody SignUpRequest signUpRequest) {
