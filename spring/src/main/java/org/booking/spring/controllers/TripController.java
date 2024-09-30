@@ -120,12 +120,12 @@ public class TripController {
 
             Trips savedTrip = tripService.save(trip);
             tripDurationAndDistance.setTrip(savedTrip);
-            tripDurationAndDistanceRepository.save(tripDurationAndDistance);
+            TripDurationAndDistance t = tripDurationAndDistanceRepository.save(tripDurationAndDistance);
             tripAgreement.setTrip(savedTrip);
-            tripAgreementRepository.save(tripAgreement);
+            TripAgreement tr = tripAgreementRepository.save(tripAgreement);
 
             options.setTrip(savedTrip);
-            optionsRepository.save(options);
+            Options op = optionsRepository.save(options);
             return ResponseEntity.ok(savedTrip.getId());
 
         } catch (Exception e) {
@@ -158,8 +158,16 @@ public class TripController {
         String finishState = request.getTo().getCountry();
         LocalDate departureDate = request.getDate();
         int passengerCount = request.getPassengers().size();
+        List<Trips> l = tripService.searchTrips(departureDate, passengerCount, startCity, startState, finishCity, finishState);
+        System.out.println(l);
+       for(Trips t : l)
+       {System.out.println(t.getId());
+           System.out.println(t.getAvailableSeats());
+           System.out.println(t.getFinishTravelPoint().getCity());
+           System.out.println(t.getUser().getName());
 
-        return tripService.searchTrips(departureDate, passengerCount, startCity, startState, finishCity, finishState);
+       }
+        return l;
     }
 
 

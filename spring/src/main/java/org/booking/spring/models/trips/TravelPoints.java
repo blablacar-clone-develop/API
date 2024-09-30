@@ -42,5 +42,12 @@ public class TravelPoints {
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
     }
+    @Override
+    public String toString() {
+        return "TravelPoints{" +
+                "city='" + this.city + '\'' +
+                ", state='" + this.state + '\'' +
+                '}';
+    }
 
 }

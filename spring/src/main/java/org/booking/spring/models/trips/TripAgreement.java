@@ -1,5 +1,7 @@
 package org.booking.spring.models.trips;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,6 +23,13 @@ public class TripAgreement {
     // Зв'язок з таблицею Trips (ID поїздки)
     @OneToOne
     @JoinColumn(name = "trip_id", nullable = false)
+    @JsonBackReference
     private Trips trip;
+    @Override
+    public String toString() {
+        return "TripAgreement{" +
+                "agreementId='" + isAgreed + '\'' +
+                '}';
+    }
 
 }

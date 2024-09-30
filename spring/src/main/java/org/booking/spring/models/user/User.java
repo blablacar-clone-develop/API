@@ -1,5 +1,6 @@
 package org.booking.spring.models.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -33,7 +34,7 @@ public class User extends BaseUserEntity {
     private List<Autos> autos;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
+    @JsonIgnore
     private List<Trips> trips;
 
     //Зв'язок з аватаркою

@@ -2,6 +2,7 @@ package org.booking.spring.models.trips;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.booking.spring.models.auto.Autos;
@@ -27,6 +28,7 @@ public class Trips {
     // Багато автомобілів належать одному користувачу
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonManagedReference
     private User user;
 
     @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -52,12 +54,15 @@ public class Trips {
     // Зв'язок з TravelPoint для початкової точки
     @ManyToOne
     @JoinColumn(name = "start_travel_point_id")
+    @JsonManagedReference
     private TravelPoints startTravelPoint;
     @OneToOne(mappedBy = "trip", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private Options options;
     // Зв'язок з TravelPoint для кінцевої точки
     @ManyToOne
     @JoinColumn(name = "finish_travel_point_id")
+    @JsonManagedReference
     private TravelPoints finishTravelPoint;
 
     @Column(name = "created_at")
@@ -67,11 +72,13 @@ public class Trips {
     private LocalDateTime updatedAt;
 
     @OneToOne(mappedBy = "trip", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
     private TripAgreement tripAgreement;
 
 
     // Зв'язок з TripDurationAndDistance
     @OneToOne(mappedBy = "trip", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
     private TripDurationAndDistance tripDurationAndDistance;
 
     @PrePersist
@@ -84,5 +91,11 @@ public class Trips {
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
     }
-
+    @Override
+    public String toString() {
+        return "Trips{" +
+                "id=" + id +
+                // Add fields that do not recursively call `Options.toString()`
+                '}';
+    }
 }

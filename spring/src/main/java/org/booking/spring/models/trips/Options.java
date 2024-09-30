@@ -1,5 +1,6 @@
 package org.booking.spring.models.trips;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -20,5 +21,13 @@ public class Options {
     // Зв'язок з поїздкою (один до одного)
     @OneToOne
     @JoinColumn(name = "trip_id")
+    @JsonBackReference
     private Trips trip;
+    @Override
+    public String toString() {
+        return "Options{" +
+                "optionId=" + id +
+                // Add fields that do not recursively call `Trips.toString()`
+                '}';
+    }
 }
