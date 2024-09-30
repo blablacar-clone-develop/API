@@ -1,5 +1,6 @@
 package org.booking.spring.controllers;
 
+import org.booking.spring.config.email.EmailSender;
 import org.booking.spring.models.user.AccountInfo;
 import org.booking.spring.models.user.User;
 import org.booking.spring.models.user.UserVerification;
@@ -29,14 +30,17 @@ public class UserController {
     private final AccountInfoService accountInfoService;
     private final JwtUserService jwtUserService;
     private final UserVerificationService userVerificationService;
+    private final VerificationCodeService verificationCodeService;
 
-    public UserController(UserService userService, UsersContactService usersContactService, AccountInfoService accountInfoService, JwtUserService jwtUserService, UserVerificationService userVerificationService) {
+    public UserController(UserService userService, UsersContactService usersContactService, AccountInfoService accountInfoService, JwtUserService jwtUserService, UserVerificationService userVerificationService, VerificationCodeService verificationCodeService) {
         this.userService = userService;
         this.usersContactService = usersContactService;
 
         this.accountInfoService = accountInfoService;
         this.jwtUserService = jwtUserService;
         this.userVerificationService = userVerificationService;
+        this.verificationCodeService = verificationCodeService;
+
     }
 
     @GetMapping("/user")
@@ -78,6 +82,28 @@ public class UserController {
 
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+        }
+    }
+
+    @GetMapping("/user/getEmailCode")
+    public String getUserEmailCode(@RequestHeader("Authorization") String token) {
+        try {
+            String jwtToken = token.substring(7);  // Видаляємо "Bearer " із заголовка
+            String verificationCode = verificationCodeService.generateVerificationCode();
+            User user = jwtUserService.getUserData(jwtToken);
+
+            EmailSender.sendEmail(
+                    user.getEmail(),
+                    "Verification code",
+                    "verificationCode :" + verificationCode
+            );
+
+
+            return verificationCode;
+
+        } catch (Exception e) {
+            System.out.println("Error in  public String getUserEmailCode \n" + e.getMessage());
+            return null;
         }
     }
 

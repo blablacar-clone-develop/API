@@ -2,6 +2,7 @@ package org.booking.spring;
 
 
 import org.booking.spring.config.email.EmailSender;
+import org.booking.spring.services.VerificationCodeService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -16,7 +17,8 @@ public class Application {
 
     @GetMapping("/hi")
     public String home() {
-        return "Hello World";
+        VerificationCodeService verificationCodeService = new VerificationCodeService();
+        return verificationCodeService.generateVerificationCode();
     }
 
     public static void main(String[] args) {
