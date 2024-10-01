@@ -13,6 +13,10 @@ public class UserVerificationService {
     public void addInfoAboutNewUserById(Long id) {
         UserVerification userVerification = new UserVerification();
         userVerification.setUserId(id);
+        userVerification.setEmailVerified(false);
+        userVerification.setPhoneVerified(false);
+        userVerification.setDocumentVerified(false);
+
         userVerificationRepository.save(userVerification);
     }
 
@@ -20,10 +24,12 @@ public class UserVerificationService {
         UserVerification userVerification = userVerificationRepository.findByUserId(userId);
         if(userVerification != null) {
             userVerification.setEmailVerified(true);
+            userVerificationRepository.save(userVerification);
             return true;
         } else {
             return false;
         }
     }
+
 
 }

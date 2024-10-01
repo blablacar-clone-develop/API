@@ -1,10 +1,7 @@
 package org.booking.spring.controllers;
 
 import org.booking.spring.config.email.EmailSender;
-import org.booking.spring.models.user.AccountInfo;
-import org.booking.spring.models.user.User;
-import org.booking.spring.models.user.UserVerification;
-import org.booking.spring.models.user.UsersContact;
+import org.booking.spring.models.user.*;
 import org.booking.spring.repositories.UserVerificationRepository;
 import org.booking.spring.requests.auth.SignInRequest;
 import org.booking.spring.requests.auth.SignUpRequest;
@@ -14,9 +11,12 @@ import org.booking.spring.responses.UserLoginResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.booking.spring.services.*;
 
+import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -29,15 +29,17 @@ public class UserController {
     private  UserVerificationRepository userVerificationRepository;
     private final AccountInfoService accountInfoService;
     private final JwtUserService jwtUserService;
+    private final EmailVerificationService emailVerificationService;
     private final UserVerificationService userVerificationService;
     private final VerificationCodeService verificationCodeService;
 
-    public UserController(UserService userService, UsersContactService usersContactService, AccountInfoService accountInfoService, JwtUserService jwtUserService, UserVerificationService userVerificationService, VerificationCodeService verificationCodeService) {
+    public UserController(UserService userService, UsersContactService usersContactService, AccountInfoService accountInfoService, JwtUserService jwtUserService, EmailVerificationService emailVerificationService, UserVerificationService userVerificationService, VerificationCodeService verificationCodeService) {
         this.userService = userService;
         this.usersContactService = usersContactService;
 
         this.accountInfoService = accountInfoService;
         this.jwtUserService = jwtUserService;
+        this.emailVerificationService = emailVerificationService;
         this.userVerificationService = userVerificationService;
         this.verificationCodeService = verificationCodeService;
 
@@ -52,7 +54,7 @@ public class UserController {
             if (user != null) {
                 return ResponseEntity.ok(user);
             } else {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+                return ResponseEntity.ok("token");
             }
         }catch(Exception ex)
         {
@@ -84,22 +86,63 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
         }
     }
+    @PostMapping("/verifyCode")
+    public ResponseEntity<String> verifyCode(
+            @RequestHeader("Authorization") String authorizationHeader,
+            @RequestBody Map<String, String> requestBody) {
 
-    @GetMapping("/user/getEmailCode")
-    public String getUserEmailCode(@RequestHeader("Authorization") String token) {
+        String jwtToken = authorizationHeader.substring(7);
+        Long userId = jwtUserService.extractUserId(jwtToken);
+        String code = requestBody.get("completeCode");
+        EmailVerification codeDB = emailVerificationService.verifyEmailCode(userId);
+        if(!codeDB.isExpired())
+        {
+            if(code.equals(codeDB.getVerificationCode()))
+            {
+                userVerificationService.verifyEmailUserById(userId);
+                return ResponseEntity.ok("code");
+            }
+            else
+                return ResponseEntity.ok("incorrect");
+        }
+        else {
+            return ResponseEntity.ok("time");
+        }
+
+    }
+    @GetMapping("/user/getEmailCode/{token}")
+    public String getUserEmailCode(@PathVariable String token) {
         try {
-            String jwtToken = token.substring(7);  // Видаляємо "Bearer " із заголовка
-            String verificationCode = verificationCodeService.generateVerificationCode();
-            User user = jwtUserService.getUserData(jwtToken);
+            // Видаляємо "Bearer " із заголовка
+            Long userId = jwtUserService.extractUserId(token);
+            Optional<User> existingUser = userService.getUserById(userId);
 
+            // Перевіряємо, чи вже є активний код для цього користувача
+            EmailVerification existingVerification = emailVerificationService.verifyEmailCode(userId);
+            if (existingVerification != null) {
+                return "code already exists"; // Код вже існує, не потрібно відправляти емейл
+            }
+
+            // Генеруємо новий код
+            String verificationCode = verificationCodeService.generateVerificationCode();
             EmailSender.sendEmail(
-                    user.getEmail(),
+                    existingUser.get().getEmail(),
                     "Verification code",
                     "verificationCode :" + verificationCode
             );
 
-            return verificationCode;
+            // Створюємо новий запис EmailVerification
+            EmailVerification emailVerification = new EmailVerification();
+            emailVerification.setVerificationCode(verificationCode);
+            emailVerification.setExpiresAt(LocalDateTime.now().plusMinutes(5));
+            emailVerification.setUserId(existingUser.get().getId());
+            EmailVerification e = emailVerificationService.save(emailVerification);
 
+            if (e != null) {
+                return "code";
+            } else {
+                return "mistake";
+            }
         } catch (Exception e) {
             System.out.println("Error in  public String getUserEmailCode \n" + e.getMessage());
             return null;
