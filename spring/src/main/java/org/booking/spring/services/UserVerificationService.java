@@ -1,5 +1,6 @@
 package org.booking.spring.services;
 
+import org.booking.spring.models.user.EmailVerification;
 import org.booking.spring.models.user.UserVerification;
 import org.booking.spring.repositories.UserVerificationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,17 @@ public class UserVerificationService {
             return false;
         }
     }
+    public boolean verifyPhoneUserById(Long userId) {
+        UserVerification userVerification = userVerificationRepository.findByUserId(userId);
+        if(userVerification != null) {
+            userVerification.setPhoneVerified(true);
+            userVerificationRepository.save(userVerification);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 
 
 }

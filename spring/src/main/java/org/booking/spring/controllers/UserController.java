@@ -99,6 +99,7 @@ public class UserController {
         {
             if(code.equals(codeDB.getVerificationCode()))
             {
+                emailVerificationService.delete(codeDB);
                 userVerificationService.verifyEmailUserById(userId);
                 return ResponseEntity.ok("code");
             }

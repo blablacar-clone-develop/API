@@ -19,5 +19,7 @@ public class EmailVerificationService {
         return emailVerificationRepository.findByUserId(userId);
     }
 
-
+    public void delete(EmailVerification codeDB) {
+        emailVerificationRepository.delete(codeDB);
+    }
 }
