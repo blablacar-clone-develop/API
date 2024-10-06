@@ -94,19 +94,23 @@ public class UserController {
         Long userId = jwtUserService.extractUserId(jwtToken);
         String code = requestBody.get("completeCode");
         EmailVerification codeDB = emailVerificationService.verifyEmailCode(userId);
+        System.out.println("КОД которий пріслал пользователь"+ code);
 
         if(!codeDB.isExpired())
         {
             if(code.equals(codeDB.getVerificationCode()))
             {
+                System.out.println("КОДи совпалі");
                 emailVerificationService.delete(codeDB);
                 userVerificationService.verifyEmailUserById(userId);
                 return ResponseEntity.ok("code");
             }
-            else
+            else {
+                System.out.println("КОД не коректний");
                 return ResponseEntity.ok("incorrect");
-        }
-        else {
+            }
+        } else {
+            System.out.println("Вишло время");
             return ResponseEntity.ok("time");
         }
 
@@ -126,23 +130,22 @@ public class UserController {
             // Перевіряємо, чи вже є активний код для цього користувача
             EmailVerification existingVerification = emailVerificationService.verifyEmailCode(userId);
 
-            System.out.println(existingVerification);
-
             if (existingVerification != null) {
                     // термін дії коду сплив алгоритм нижче
-//                    if(existingVerification.isExpired()) {
-//                        String code = verificationCodeService.generateVerificationCode();
-//
-//                        existingVerification.setVerificationCode(code);
-//                        existingVerification.setCreatedAt(LocalDateTime.now());
-//                        existingVerification.setExpiresAt(LocalDateTime.now().plusMinutes(5));
-//                        EmailSender.sendEmail(
-//                                existingUser.get().getEmail(),
-//                                "Verification code",
-//                                "verificationCode :" + code
-//                        );
-//                        return "code";
-//                    }
+                    if(existingVerification.isExpired()) {
+                        System.out.println("Термін дії коду сплив -  "+ existingVerification.isExpired());
+                        String code = verificationCodeService.generateVerificationCode();
+                        existingVerification.setVerificationCode(code);
+                        existingVerification.setCreatedAt(LocalDateTime.now());
+                        existingVerification.setExpiresAt(LocalDateTime.now().plusMinutes(5));
+                        emailVerificationService.save(existingVerification);
+                        EmailSender.sendEmail(
+                                existingUser.get().getEmail(),
+                                "Verification code",
+                                "verificationCode :" + code
+                        );
+                        return "code";
+                    }
                 System.out.println("ТЕКУЩИЙ КОД "+ existingVerification.getVerificationCode());
                 return "Код уже було відправлено на електронну пошту"; // Код вже існує, не потрібно відправляти емейл
             }
