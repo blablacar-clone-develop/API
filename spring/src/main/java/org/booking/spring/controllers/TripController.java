@@ -95,11 +95,14 @@ public class TripController {
             String selectedTime = (String) tripData.get("selectedTime");
             String selectedDate = (String) tripData.get("date");
 
+
             LocalTime time = LocalTime.parse(selectedTime, DateTimeFormatter.ofPattern("HH:mm"));
-            OffsetDateTime date = OffsetDateTime.parse(selectedDate, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+            //OffsetDateTime date = OffsetDateTime.parse(selectedDate, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+            LocalDate date = LocalDate.parse(selectedDate, DateTimeFormatter.ISO_LOCAL_DATE);
 
             trip.setDepartureTime(time);
-            trip.setDepartureDate(date.toLocalDate());
+            trip.setDepartureDate(date);
+
             trip.setUser(userService.getUserById(userId).get());
 
             Map<String, Object> optionsData = (Map<String, Object>) tripData.get("options");
@@ -129,6 +132,7 @@ public class TripController {
             return ResponseEntity.ok(savedTrip.getId());
 
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
@@ -146,6 +150,7 @@ public class TripController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
+
     @PostMapping("/getSearchTrip")
     public List<Trips> getSearchTrip(@RequestBody SearchTripRequest request) {
 
@@ -156,7 +161,11 @@ public class TripController {
         String startState = request.getFrom().getCountry();
         String finishCity = request.getTo().getCity();
         String finishState = request.getTo().getCountry();
-        LocalDate departureDate = request.getDate();
+
+        LocalDate departureDate = LocalDate.parse(request.getDate().toString(), DateTimeFormatter.ISO_LOCAL_DATE);
+        System.out.println("Departure Date: " + departureDate);
+
+
         int passengerCount = request.getPassengers().size();
         List<Trips> l = tripService.searchTrips(departureDate, passengerCount, startCity, startState, finishCity, finishState);
         System.out.println(l);
