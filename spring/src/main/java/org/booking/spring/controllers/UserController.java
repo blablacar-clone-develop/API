@@ -94,23 +94,18 @@ public class UserController {
         Long userId = jwtUserService.extractUserId(jwtToken);
         String code = requestBody.get("completeCode");
         EmailVerification codeDB = emailVerificationService.verifyEmailCode(userId);
-        System.out.println("КОД которий пріслал пользователь"+ code);
-
         if(!codeDB.isExpired())
         {
             if(code.equals(codeDB.getVerificationCode()))
             {
-                System.out.println("КОДи совпалі");
                 emailVerificationService.delete(codeDB);
                 userVerificationService.verifyEmailUserById(userId);
                 return ResponseEntity.ok("code");
             }
             else {
-                System.out.println("КОД не коректний");
                 return ResponseEntity.ok("incorrect");
             }
         } else {
-            System.out.println("Вишло время");
             return ResponseEntity.ok("time");
         }
 
@@ -133,7 +128,6 @@ public class UserController {
             if (existingVerification != null) {
                     // термін дії коду сплив алгоритм нижче
                     if(existingVerification.isExpired()) {
-                        System.out.println("Термін дії коду сплив -  "+ existingVerification.isExpired());
                         String code = verificationCodeService.generateVerificationCode();
                         existingVerification.setVerificationCode(code);
                         existingVerification.setCreatedAt(LocalDateTime.now());
@@ -146,8 +140,7 @@ public class UserController {
                         );
                         return "code";
                     }
-                System.out.println("ТЕКУЩИЙ КОД "+ existingVerification.getVerificationCode());
-                return "Код уже було відправлено на електронну пошту"; // Код вже існує, не потрібно відправляти емейл
+                    return "Код уже було відправлено на електронну пошту"; // Код вже існує, не потрібно відправляти емейл
             }
 
             // Генеруємо новий код
