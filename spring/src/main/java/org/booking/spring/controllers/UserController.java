@@ -113,6 +113,7 @@ public class UserController {
     }
 
 
+    /////Підходить для підтвердження електронної пошти
     @GetMapping("/user/getEmailCode")
     public String getUserEmailCode(@RequestHeader("Authorization") String authorizationHeader) {
         try {
@@ -124,8 +125,26 @@ public class UserController {
 
             // Перевіряємо, чи вже є активний код для цього користувача
             EmailVerification existingVerification = emailVerificationService.verifyEmailCode(userId);
+
+            System.out.println(existingVerification);
+
             if (existingVerification != null) {
-                return "code already exists"; // Код вже існує, не потрібно відправляти емейл
+                    // термін дії коду сплив алгоритм нижче
+//                    if(existingVerification.isExpired()) {
+//                        String code = verificationCodeService.generateVerificationCode();
+//
+//                        existingVerification.setVerificationCode(code);
+//                        existingVerification.setCreatedAt(LocalDateTime.now());
+//                        existingVerification.setExpiresAt(LocalDateTime.now().plusMinutes(5));
+//                        EmailSender.sendEmail(
+//                                existingUser.get().getEmail(),
+//                                "Verification code",
+//                                "verificationCode :" + code
+//                        );
+//                        return "code";
+//                    }
+                System.out.println("ТЕКУЩИЙ КОД "+ existingVerification.getVerificationCode());
+                return "Код уже було відправлено на електронну пошту"; // Код вже існує, не потрібно відправляти емейл
             }
 
             // Генеруємо новий код
