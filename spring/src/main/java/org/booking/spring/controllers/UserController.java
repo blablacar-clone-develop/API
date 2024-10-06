@@ -36,13 +36,11 @@ public class UserController {
     public UserController(UserService userService, UsersContactService usersContactService, AccountInfoService accountInfoService, JwtUserService jwtUserService, EmailVerificationService emailVerificationService, UserVerificationService userVerificationService, VerificationCodeService verificationCodeService) {
         this.userService = userService;
         this.usersContactService = usersContactService;
-
         this.accountInfoService = accountInfoService;
         this.jwtUserService = jwtUserService;
         this.emailVerificationService = emailVerificationService;
         this.userVerificationService = userVerificationService;
         this.verificationCodeService = verificationCodeService;
-
     }
 
     @GetMapping("/user")
@@ -86,6 +84,7 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
         }
     }
+
     @PostMapping("/verifyCode")
     public ResponseEntity<String> verifyCode(
             @RequestHeader("Authorization") String authorizationHeader,
@@ -95,6 +94,7 @@ public class UserController {
         Long userId = jwtUserService.extractUserId(jwtToken);
         String code = requestBody.get("completeCode");
         EmailVerification codeDB = emailVerificationService.verifyEmailCode(userId);
+
         if(!codeDB.isExpired())
         {
             if(code.equals(codeDB.getVerificationCode()))
@@ -111,11 +111,15 @@ public class UserController {
         }
 
     }
-    @GetMapping("/user/getEmailCode/{token}")
-    public String getUserEmailCode(@PathVariable String token) {
+
+
+    @GetMapping("/user/getEmailCode")
+    public String getUserEmailCode(@RequestHeader("Authorization") String authorizationHeader) {
         try {
+
             // Видаляємо "Bearer " із заголовка
-            Long userId = jwtUserService.extractUserId(token);
+            String jwtToken = authorizationHeader.substring(7);
+            Long userId = jwtUserService.extractUserId(jwtToken);
             Optional<User> existingUser = userService.getUserById(userId);
 
             // Перевіряємо, чи вже є активний код для цього користувача

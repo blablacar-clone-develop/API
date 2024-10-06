@@ -57,7 +57,7 @@ public class SecurityConfig {
                                 "api/autos/create",
                                 "api/user",
                                 "api/user/verification/*",
-                                "api/user/getEmailCode/*",
+                                "api/user/getEmailCode",
                                 "api/trips/create",
                                 "api/trips/getSearchTrip",
                                 "api/verifyCode",
