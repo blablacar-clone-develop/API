@@ -42,6 +42,7 @@ public class UserService {
         user.setDateOfBirthday(signUpRequest.getDateOfBirth());
         user.setGender(signUpRequest.getGender());
 
+
         //User Permission
         UserPermissions userPermissions = new UserPermissions();
         userPermissions.setName("User");
