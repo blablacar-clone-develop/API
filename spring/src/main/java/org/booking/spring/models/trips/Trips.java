@@ -59,6 +59,9 @@ public class Trips {
     @OneToOne(mappedBy = "trip", cascade = CascadeType.ALL)
     @JsonManagedReference
     private Options options;
+    @OneToOne(mappedBy = "trip", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private Amentities amenities;
     // Зв'язок з TravelPoint для кінцевої точки
     @ManyToOne
     @JoinColumn(name = "finish_travel_point_id")

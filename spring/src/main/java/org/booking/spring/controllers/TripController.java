@@ -3,6 +3,8 @@ package org.booking.spring.controllers;
 import org.booking.spring.models.trips.*;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.booking.spring.repositories.AmentitiesRepository;
 import org.booking.spring.repositories.OptionsRepository;
 import org.booking.spring.repositories.TripAgreementRepository;
 import org.booking.spring.repositories.TripDurationAndDistanceRepository;
@@ -32,15 +34,17 @@ public class TripController {
     private final OptionsRepository optionsRepository;
     private final TripDurationAndDistanceRepository tripDurationAndDistanceRepository;
     private final TripAgreementRepository tripAgreementRepository;
+    private final AmentitiesRepository amentitiesRepository;
     private final TravelPointsService travelPointsService;
     private final UserService userService;
     private final JwtUserService jwtUserService;
 
-    public TripController(TripService tripService, OptionsRepository optionsRepository, TripDurationAndDistanceRepository tripDurationAndDistanceRepository, TripAgreementRepository tripAgreementRepository, TravelPointsService travelPointsService, UserService userService, JwtUserService jwtUserService) {
+    public TripController(TripService tripService, OptionsRepository optionsRepository, TripDurationAndDistanceRepository tripDurationAndDistanceRepository, TripAgreementRepository tripAgreementRepository, AmentitiesRepository amentitiesRepository, TravelPointsService travelPointsService, UserService userService, JwtUserService jwtUserService) {
         this.tripService = tripService;
         this.optionsRepository = optionsRepository;
         this.tripDurationAndDistanceRepository = tripDurationAndDistanceRepository;
         this.tripAgreementRepository = tripAgreementRepository;
+        this.amentitiesRepository = amentitiesRepository;
         this.travelPointsService = travelPointsService;
         this.userService = userService;
         this.jwtUserService = jwtUserService;
@@ -112,6 +116,15 @@ public class TripController {
             options.setWomenOnly((Boolean) optionsData.get("womenOnly"));
             options.setTrip(trip);
 
+            Map<String, Object> am = (Map<String, Object>) tripData.get("amenities");
+            Amentities amentities = new Amentities();
+            amentities.setSmoking((Boolean) am.get("smoking"));
+            amentities.setWifi((Boolean) am.get("wifi"));
+            amentities.setETickets((Boolean) am.get("eTickets"));
+            amentities.setAirConditioning((Boolean) am.get("airConditioning"));
+            amentities.setFoodProvided((Boolean) am.get("food"));
+            amentities.setPetsAllowed((Boolean) am.get("petsAllowed"));
+
             Map<String, Object> selectedRoute = (Map<String, Object>) tripData.get("selectedRoute");
             TripDurationAndDistance  tripDurationAndDistance = new TripDurationAndDistance();
 
@@ -126,7 +139,8 @@ public class TripController {
             TripDurationAndDistance t = tripDurationAndDistanceRepository.save(tripDurationAndDistance);
             tripAgreement.setTrip(savedTrip);
             TripAgreement tr = tripAgreementRepository.save(tripAgreement);
-
+            amentities.setTrip(savedTrip);
+            Amentities a = amentitiesRepository.save(amentities);
             options.setTrip(savedTrip);
             Options op = optionsRepository.save(options);
             return ResponseEntity.ok(savedTrip.getId());
