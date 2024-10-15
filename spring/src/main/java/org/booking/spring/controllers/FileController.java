@@ -67,7 +67,7 @@ public class FileController {
 
             String[] adressArr = filePath.split("9000");
 
-            if(adressArr[0].equals("blablacar.imagestorage.minio")) {
+            if(adressArr[0].equals("http://blablacar.imagestorage.minio:")) {
                 filePath = "/storage"+ adressArr[1];
             }
 
