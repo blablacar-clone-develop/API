@@ -68,7 +68,7 @@ public class FileController {
 
             String[] adressArr = filePath.split("9000");
             if(adressArr[0].equals("http://blablacar.imageStorage.minio:")) {
-                filePath = "/storage"+ adressArr[1];
+                filePath = adressArr[1];
             }
 
             userAvatarService.SaveAvatar(filePath, fileName,userId);
