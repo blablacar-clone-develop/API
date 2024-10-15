@@ -65,6 +65,12 @@ public class FileController {
             // Викликаємо метод збереження файлу
             String filePath = storageService.put("avatar", fileName, file);
 
+            String[] adressArr = filePath.split("9000");
+
+            if(adressArr[0].equals("blablacar.imagestorage.minio")) {
+                filePath = "/storage"+ adressArr[1];
+            }
+
             userAvatarService.SaveAvatar(filePath, fileName,userId);
 
             return ResponseEntity.ok("Аватар успішно завантажено");
