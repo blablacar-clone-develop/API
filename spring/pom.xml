@@ -104,6 +104,12 @@
             <artifactId>javax.mail</artifactId>
             <version>1.6.2</version>
         </dependency>
+        <!-- Для міграції БД -->
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-mysql</artifactId>
+            <version>10.15.0</version>
+        </dependency>
 
 
     </dependencies>
