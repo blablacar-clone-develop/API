@@ -96,6 +96,7 @@ public class TripController {
             );
 
             trip.setAutos(userAuto);
+
             trip.setStartTravelPoint(travelPointFrom);
             trip.setFinishTravelPoint(travelPointTo);
             trip.setPassengerCount((Integer) tripData.get("passengers"));

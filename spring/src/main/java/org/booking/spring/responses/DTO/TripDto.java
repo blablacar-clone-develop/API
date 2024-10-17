@@ -38,7 +38,14 @@ public class TripDto {
         this.amentities = new AmentitiesDTO(trip.get().getAmenities());
         this.trip_duration = new TripDurationAndDistanceDTO(trip.get().getTripDurationAndDistance());
         this.isAgreed = trip.get().getTripAgreement().getIsAgreed();
-        this.auto = new AutoDto(trip.get().getAutos());
+
+        // Перевірка на null перед створенням AutoDto
+        if (trip.get().getAutos() != null) {
+            this.auto = new AutoDto(trip.get().getAutos());
+        } else {
+            this.auto = null; // або new AutoDto() якщо потрібно створити пустий об'єкт
+        }
+
     }
 }
 
