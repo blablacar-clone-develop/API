@@ -60,6 +60,7 @@ public class SecurityConfig {
                                 "api/user/getEmailCode",
                                 "api/trips/create",
                                 "api/trips/getSearchTrip",
+                                "api/trips/getTripById/*",
                                 "api/verifyCode",
                                 "api/sendCode",
                                 "api/phone/verifyCode"

@@ -101,7 +101,6 @@ public class TripController {
 
 
             LocalTime time = LocalTime.parse(selectedTime, DateTimeFormatter.ofPattern("HH:mm"));
-            //OffsetDateTime date = OffsetDateTime.parse(selectedDate, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
             LocalDate date = LocalDate.parse(selectedDate, DateTimeFormatter.ISO_LOCAL_DATE);
 
             trip.setDepartureTime(time);
@@ -150,10 +149,13 @@ public class TripController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
+
     @GetMapping("/getTripById/{id}")
     public ResponseEntity<Trips> getTripsById(@PathVariable("id") Long id)
     {
         try {
+            System.out.println("WE IN GET TRIP id=  " + id);
+
             Optional<Trips> tripOptional = tripService.findById(id);
             if (tripOptional.isPresent()) {
                 return ResponseEntity.ok(tripOptional.get());
