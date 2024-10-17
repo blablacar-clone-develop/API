@@ -28,7 +28,7 @@ services:
   blablacar.phpmyadmin:
     image: phpmyadmin:5.2.1-apache
     ports:
-      - '8088:8088'
+      - '8088:80'
     expose:
       - "8088"
     env_file:
