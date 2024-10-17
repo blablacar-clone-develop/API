@@ -2,7 +2,6 @@ package org.booking.spring.responses.DTO;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.booking.spring.models.trips.TravelPoints;
 import org.booking.spring.models.trips.Trips;
 
 import java.time.LocalDate;
@@ -39,6 +38,7 @@ public class TripDto {
         this.amentities = new AmentitiesDTO(trip.get().getAmenities());
         this.trip_duration = new TripDurationAndDistanceDTO(trip.get().getTripDurationAndDistance());
         this.isAgreed = trip.get().getTripAgreement().getIsAgreed();
+        this.auto = new AutoDto(trip.get().getAutos());
     }
 }
 

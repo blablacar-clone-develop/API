@@ -22,14 +22,14 @@ public class Autos extends BaseEntity {
     @JsonBackReference
     private User user;
 
-    @ManyToMany
-    @JsonBackReference
-    @JoinTable(
-            name = "autos_trips",
-            joinColumns = @JoinColumn(name = "auto_id"),
-            inverseJoinColumns = @JoinColumn(name = "trip_id")
-    )
-    private List<Trips> trips;
+//    @ManyToMany
+//    @JsonBackReference
+//    @JoinTable(
+//            name = "autos_trips",
+//            joinColumns = @JoinColumn(name = "auto_id"),
+//            inverseJoinColumns = @JoinColumn(name = "trip_id")
+//    )
+//    private List<Trips> trips;
 
     @ManyToOne
     @JoinColumn(name = "brand_id", nullable = false)

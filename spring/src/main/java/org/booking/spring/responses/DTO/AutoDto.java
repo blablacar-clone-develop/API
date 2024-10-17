@@ -2,6 +2,7 @@ package org.booking.spring.responses.DTO;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.booking.spring.models.auto.Autos;
 import org.booking.spring.models.auto.Brand;
 import org.booking.spring.models.auto.Color;
 import org.booking.spring.models.auto.Model;
@@ -20,6 +21,13 @@ public class AutoDto {
         this.brand = brand;
         this.model = model;
         this.color = color;
+    }
+
+    public AutoDto(Autos autos) {
+        this.id = autos.getId();
+        this.brand = autos.getBrand();
+        this.model = autos.getModel();
+        this.color = autos.getColor();
     }
 
 }

@@ -22,10 +22,14 @@ public class Trips {
     private Long id;
 
     // Зв'язок "багато до багатьох" з Autos
-    @ManyToMany(mappedBy = "trips")
-    private List<Autos> autos;
+//    @ManyToMany(mappedBy = "trips")
+//    private List<Autos> autos;
 
-    // Багато автомобілів належать одному користувачу
+    @ManyToOne
+    @JoinColumn(name = "auto_id")
+    @JsonManagedReference
+    private Autos autos;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     @JsonManagedReference
