@@ -46,6 +46,7 @@ public class AutosService {
         // Порівнюємо userId у автомобіля з userId, переданим у параметрах
         return auto.getUser().getId().equals(userId);
     }
+
     public void saveFileInDB(List<AutoDtoJson> autoDtoJsonList) {
         if (brandRepository.count() == 0) {
             for (AutoDtoJson autoDtoJson : autoDtoJsonList) {
@@ -86,6 +87,10 @@ public class AutosService {
     public AutoDto getAutoById(Long id) {
         Autos auto = repository.findById(id).orElse(null);
         return this.returnAutoDto(auto);
+    }
+
+    public Autos getAutoByIdNotDTO (Long id) {
+        return repository.findById(id).orElse(null);
     }
 
     @Transactional

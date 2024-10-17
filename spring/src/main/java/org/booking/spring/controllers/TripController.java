@@ -1,5 +1,6 @@
 package org.booking.spring.controllers;
 
+import org.booking.spring.models.auto.Autos;
 import org.booking.spring.models.trips.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,10 +11,7 @@ import org.booking.spring.repositories.TripAgreementRepository;
 import org.booking.spring.repositories.TripDurationAndDistanceRepository;
 import org.booking.spring.requests.auth.SearchTripRequest;
 import org.booking.spring.responses.DTO.TripDto;
-import org.booking.spring.services.JwtUserService;
-import org.booking.spring.services.TravelPointsService;
-import org.booking.spring.services.TripService;
-import org.booking.spring.services.UserService;
+import org.booking.spring.services.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,8 +35,9 @@ public class TripController {
     private final TravelPointsService travelPointsService;
     private final UserService userService;
     private final JwtUserService jwtUserService;
+    private final AutosService autosService;
 
-    public TripController(TripService tripService, OptionsRepository optionsRepository, TripDurationAndDistanceRepository tripDurationAndDistanceRepository, TripAgreementRepository tripAgreementRepository, AmentitiesRepository amentitiesRepository, TravelPointsService travelPointsService, UserService userService, JwtUserService jwtUserService) {
+    public TripController(TripService tripService, OptionsRepository optionsRepository, TripDurationAndDistanceRepository tripDurationAndDistanceRepository, TripAgreementRepository tripAgreementRepository, AmentitiesRepository amentitiesRepository, TravelPointsService travelPointsService, UserService userService, JwtUserService jwtUserService, AutosService autosService) {
         this.tripService = tripService;
         this.optionsRepository = optionsRepository;
         this.tripDurationAndDistanceRepository = tripDurationAndDistanceRepository;
@@ -47,6 +46,7 @@ public class TripController {
         this.travelPointsService = travelPointsService;
         this.userService = userService;
         this.jwtUserService = jwtUserService;
+        this.autosService = autosService;
     }
 
     private Double convertToDouble(Object value) {
@@ -90,6 +90,12 @@ public class TripController {
             travelPointTo = travelPointsService.saveTravelPoint(travelPointTo);
 
             Trips trip = new Trips();
+
+            Autos userAuto = autosService.getAutoByIdNotDTO(
+                    Long.parseLong(tripData.get("carId").toString())
+            );
+
+            trip.setAutos(userAuto);
             trip.setStartTravelPoint(travelPointFrom);
             trip.setFinishTravelPoint(travelPointTo);
             trip.setPassengerCount((Integer) tripData.get("passengers"));
