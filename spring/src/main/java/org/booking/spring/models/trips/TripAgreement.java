@@ -25,6 +25,7 @@ public class TripAgreement {
     @JoinColumn(name = "trip_id", nullable = false)
     @JsonBackReference
     private Trips trip;
+
     @Override
     public String toString() {
         return "TripAgreement{" +

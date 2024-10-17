@@ -2,6 +2,7 @@ package org.booking.spring.services;
 
 import org.booking.spring.models.trips.Trips;
 import org.booking.spring.repositories.TripsRepository;
+import org.booking.spring.responses.DTO.TripDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,11 @@ public class TripService {
 
     public Optional<Trips> findById(Long id) {
         return tripRepository.findById(id);
+    }
+
+    public TripDto findByIdDTO(long id) {
+        return new TripDto(tripRepository.findById(id));
+
     }
 
     public List<Trips> searchTrips(LocalDate departureDate, int passengerCount, String startCity, String startState, String finishCity, String finishState) {

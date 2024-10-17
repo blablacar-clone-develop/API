@@ -9,7 +9,6 @@ import org.booking.spring.repositories.OptionsRepository;
 import org.booking.spring.repositories.TripAgreementRepository;
 import org.booking.spring.repositories.TripDurationAndDistanceRepository;
 import org.booking.spring.requests.auth.SearchTripRequest;
-import org.booking.spring.responses.DTO.AutoDto;
 import org.booking.spring.responses.DTO.TripDto;
 import org.booking.spring.services.JwtUserService;
 import org.booking.spring.services.TravelPointsService;
@@ -151,14 +150,12 @@ public class TripController {
     }
 
     @GetMapping("/getTripById/{id}")
-    public ResponseEntity<Trips> getTripsById(@PathVariable("id") Long id)
+    public ResponseEntity<TripDto> getTripsById(@PathVariable("id") Long id)
     {
         try {
-            System.out.println("WE IN GET TRIP id=  " + id);
-
-            Optional<Trips> tripOptional = tripService.findById(id);
-            if (tripOptional.isPresent()) {
-                return ResponseEntity.ok(tripOptional.get());
+            TripDto trip = tripService.findByIdDTO(id);
+            if (trip != null) {
+                return ResponseEntity.ok(trip);
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
             }
