@@ -23,6 +23,7 @@ public class Autos extends BaseEntity {
     private User user;
 
     @ManyToMany
+    @JsonBackReference
     @JoinTable(
             name = "autos_trips",
             joinColumns = @JoinColumn(name = "auto_id"),
