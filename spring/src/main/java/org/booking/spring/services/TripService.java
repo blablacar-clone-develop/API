@@ -26,6 +26,10 @@ public class TripService {
         return new TripDto(tripRepository.findById(id));
 
     }
+    public List<Trips> getTripsByUserId(Long userId) {
+        // Fetch trips by userId
+        return tripRepository.findByUserId(userId);
+    }
 
     public List<Trips> searchTrips(LocalDate departureDate, int passengerCount, String startCity, String startState, String finishCity, String finishState) {
         return tripRepository.findTripsByCriteria(departureDate, passengerCount, startCity, startState, finishCity, finishState);

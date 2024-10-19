@@ -58,6 +58,25 @@ public class TripController {
             return (Double) value;
         }
     }
+    @GetMapping("/users")
+    public ResponseEntity<List<Trips>> getTripsByTypeAndUserId(
+            @RequestParam String type,
+            @RequestParam Long userId) {
+
+        List<Trips> trips;
+
+        if (type.equalsIgnoreCase("created")) {
+            // Fetch created trips for the given userId
+            trips = tripService.getTripsByUserId(userId);
+        } /*else if (type.equalsIgnoreCase("reserved")) {
+            // Fetch reserved trips for the given userId
+            trips = tripService.getReservedTripsByUserId(userId);
+        } */else {
+            return ResponseEntity.badRequest().body(null); // Return bad request for invalid 'type'
+        }
+
+        return ResponseEntity.ok(trips);
+    }
 
     @PostMapping("/create")
     public ResponseEntity<?> createTrip(

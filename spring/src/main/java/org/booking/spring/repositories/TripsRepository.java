@@ -10,6 +10,7 @@ import java.util.List;
 
 @Repository
 public interface TripsRepository extends JpaRepository<Trips, Long> {
+    List<Trips> findByUserId(Long userId);
     @Query("SELECT t FROM Trips t " +
             "WHERE t.departureDate = :departureDate " +
             "AND t.availableSeats >= :passengerCount " +

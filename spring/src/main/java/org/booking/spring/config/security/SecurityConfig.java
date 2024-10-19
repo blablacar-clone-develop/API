@@ -63,7 +63,8 @@ public class SecurityConfig {
                                 "api/trips/getTripById/*",
                                 "api/verifyCode",
                                 "api/sendCode",
-                                "api/phone/verifyCode"
+                                "api/phone/verifyCode",
+                                "api/trips/users"
 
                                         ).permitAll()
                                         .anyRequest().authenticated()
