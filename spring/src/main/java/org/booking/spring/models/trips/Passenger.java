@@ -13,21 +13,25 @@ public class Passenger {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Багато пасажирів належать одній поїздці
     @ManyToOne
     @JoinColumn(name = "trip_id", nullable = false)
     @JsonBackReference
     private Trips trip;
 
-    // Багато пасажирів можуть бути одним користувачем
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = true)
     @JsonBackReference
     private User user;
+
+    // New field for passenger type
+    @Column(name = "passenger_type")
+    private String passengerType;
+
     @Override
     public String toString() {
         return "Passenger{" +
-                "id='" + id + '\'' +
+                "id=" + id +
+                ", user=" + (user != null ? user.getName() : passengerType) + // Display name if user exists, else passengerType
                 '}';
     }
 }

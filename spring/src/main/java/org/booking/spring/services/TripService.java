@@ -34,4 +34,22 @@ public class TripService {
     public List<Trips> searchTrips(LocalDate departureDate, int passengerCount, String startCity, String startState, String finishCity, String finishState) {
         return tripRepository.findTripsByCriteria(departureDate, passengerCount, startCity, startState, finishCity, finishState);
     }
+
+    public void changeCountPassenger(int i, Long tripId) {
+        Optional<Trips> optionalTrip = tripRepository.findById(tripId);
+
+        if (optionalTrip.isPresent()) {
+            Trips trip = optionalTrip.get();
+            int newAvailableSeats = trip.getAvailableSeats() + i;
+
+            if (newAvailableSeats >= 0) {
+                trip.setAvailableSeats(newAvailableSeats);
+                tripRepository.save(trip);
+            } else {
+                throw new IllegalArgumentException("Not enough available seats to reduce by " + i);
+            }
+        } else {
+            throw new IllegalArgumentException("Trip with ID " + tripId + " not found.");
+        }
+    }
 }
