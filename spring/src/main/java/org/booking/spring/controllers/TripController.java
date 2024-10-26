@@ -66,13 +66,11 @@ public class TripController {
         List<Trips> trips;
 
         if (type.equalsIgnoreCase("created")) {
-            // Fetch created trips for the given userId
             trips = tripService.getTripsByUserId(userId);
-        } /*else if (type.equalsIgnoreCase("reserved")) {
-            // Fetch reserved trips for the given userId
+        } else if (type.equalsIgnoreCase("reserved")) {
             trips = tripService.getReservedTripsByUserId(userId);
-        } */else {
-            return ResponseEntity.badRequest().body(null); // Return bad request for invalid 'type'
+        } else {
+            return ResponseEntity.badRequest().body(null);
         }
 
         return ResponseEntity.ok(trips);

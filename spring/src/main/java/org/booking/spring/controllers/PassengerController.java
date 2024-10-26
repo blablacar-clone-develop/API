@@ -21,6 +21,11 @@ public class PassengerController {
     private TripService tripService;
     @Autowired
     private UserService userService;
+    @GetMapping("/{tripId}")
+    public ResponseEntity<List<Long>> getPassengersByTripId(@PathVariable Long tripId) {
+        List<Long> passengerIds = passengerService.getPassengerIdsByTripId(tripId);
+        return ResponseEntity.ok(passengerIds);
+    }
 
     @PostMapping("/save")
     public ResponseEntity<String> bookTrip(@RequestBody Map<String, Object> bookingRequest) {

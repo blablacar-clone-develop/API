@@ -1,6 +1,7 @@
 package org.booking.spring.services;
 
 import org.booking.spring.models.trips.Trips;
+import org.booking.spring.repositories.PassengerRepository;
 import org.booking.spring.repositories.TripsRepository;
 import org.booking.spring.responses.DTO.TripDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,8 @@ import java.util.Optional;
 public class TripService {
     @Autowired
     private TripsRepository tripRepository;
+    @Autowired
+    private PassengerRepository passengerRepository;
     public Trips save(Trips trip) {
         return tripRepository.save(trip);
     }
@@ -51,5 +54,8 @@ public class TripService {
         } else {
             throw new IllegalArgumentException("Trip with ID " + tripId + " not found.");
         }
+    }
+    public List<Trips> getReservedTripsByUserId(Long userId) {
+        return passengerRepository.findTripsByUserId(userId);
     }
 }
