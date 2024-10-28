@@ -21,4 +21,8 @@ public class PassengerService {
                 .map(Passenger::getId)
                 .collect(Collectors.toList());
     }
+
+    public List<Passenger> getPassengerByTripId(Long id) {
+        return passengerRepository.findByTripId(id);
+    }
 }

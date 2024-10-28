@@ -58,4 +58,10 @@ public class TripService {
     public List<Trips> getReservedTripsByUserId(Long userId) {
         return passengerRepository.findTripsByUserId(userId);
     }
+
+    public Trips getTripById(Long id) {
+        return tripRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Trip with ID " + id + " not found."));
+
+    }
 }

@@ -36,8 +36,9 @@ public class TripController {
     private final UserService userService;
     private final JwtUserService jwtUserService;
     private final AutosService autosService;
+    private final PassengerService passengerService;
 
-    public TripController(TripService tripService, OptionsRepository optionsRepository, TripDurationAndDistanceRepository tripDurationAndDistanceRepository, TripAgreementRepository tripAgreementRepository, AmentitiesRepository amentitiesRepository, TravelPointsService travelPointsService, UserService userService, JwtUserService jwtUserService, AutosService autosService) {
+    public TripController(TripService tripService, OptionsRepository optionsRepository, TripDurationAndDistanceRepository tripDurationAndDistanceRepository, TripAgreementRepository tripAgreementRepository, AmentitiesRepository amentitiesRepository, TravelPointsService travelPointsService, UserService userService, JwtUserService jwtUserService, AutosService autosService, PassengerService passengerService) {
         this.tripService = tripService;
         this.optionsRepository = optionsRepository;
         this.tripDurationAndDistanceRepository = tripDurationAndDistanceRepository;
@@ -47,6 +48,7 @@ public class TripController {
         this.userService = userService;
         this.jwtUserService = jwtUserService;
         this.autosService = autosService;
+        this.passengerService = passengerService;
     }
 
     private Double convertToDouble(Object value) {
@@ -174,14 +176,27 @@ public class TripController {
     }
 
     @GetMapping("/getTripById/{id}")
-    public ResponseEntity<TripDto> getTripsById(@PathVariable("id") Long id)
+    public ResponseEntity<Trips> getTripsById(@PathVariable("id") Long id)
     {
         try {
-            TripDto trip = tripService.findByIdDTO(id);
+            Trips trip = tripService.getTripById(id);
             if (trip != null) {
                 return ResponseEntity.ok(trip);
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+    @GetMapping("/getPassengers/{id}")
+    public ResponseEntity<List<Passenger>> getPassengersByTripId(@PathVariable("id") Long id) {
+        try {
+            List<Passenger> passengers = passengerService.getPassengerByTripId(id);
+            if (passengers != null && !passengers.isEmpty()) {
+                return ResponseEntity.ok(passengers);
+            } else {
+                return ResponseEntity.ok(passengers);
             }
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);

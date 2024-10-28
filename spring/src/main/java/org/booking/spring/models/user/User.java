@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.booking.spring.models.auto.Autos;
+import org.booking.spring.models.trips.Passenger;
 import org.booking.spring.models.trips.Trips;
 
 import java.time.LocalDate;
@@ -32,6 +33,9 @@ public class User extends BaseUserEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<Autos> autos;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<Passenger> passengers;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore

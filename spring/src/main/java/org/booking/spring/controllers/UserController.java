@@ -61,7 +61,14 @@ public class UserController {
 
 
     }
+    @GetMapping("/users/hasCar/{userId}")
+    public ResponseEntity<?> hasCar(@PathVariable String userId) {
 
+        boolean userHasCar = userService.checkUserCar(userId);
+
+        // Return the result as a JSON response
+        return ResponseEntity.ok().body(Map.of("hasCar", userHasCar));
+    }
     @GetMapping("/user/verification/{id}")
     public ResponseEntity<?> getUserVerification(@PathVariable("id") Long id) {
         try {

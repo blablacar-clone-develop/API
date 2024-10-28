@@ -36,6 +36,7 @@ public class Trips {
     private User user;
 
     @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<Passenger> passengers;
 
     @Column(name = "passenger_count", nullable = false)

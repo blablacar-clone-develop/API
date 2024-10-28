@@ -61,4 +61,12 @@ public class UserService {
     }
 
 
+    public boolean checkUserCar(String userId) {
+        // Fetch the user from the database and check if they have a car
+        User user = userRepository.findById(Long.valueOf(userId))
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Assuming the User entity has a method to get their cars
+        return user.getAutos() != null && !user.getAutos().isEmpty();
+    }
 }
